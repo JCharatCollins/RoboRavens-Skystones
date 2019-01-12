@@ -24,7 +24,7 @@ public class VacuumBotV2 extends BasicMecanum {
     public CRServo lServo;
 
     //The right servo used for moving vacuum in and out
-    public Servo rServo;
+    public CRServo rServo;
 
     //The servo for moving the arm back into the lander
     public Servo liftServo;
@@ -44,7 +44,7 @@ public class VacuumBotV2 extends BasicMecanum {
         vacuumMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lServo = Map.crservo.get("lS");
-        rServo = Map.servo.get("rS");
+        rServo = Map.crservo.get("rS");
 
         liftServo = Map.servo.get("liftServo");
     }

@@ -1,4 +1,5 @@
 package Team7159.OpModes.RoverRuckus;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -17,9 +18,9 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABE
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_SILVER_MINERAL;
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
+@Autonomous(name = "TestAuto")
 
-@Autonomous(name = "DownAuto")
-public class DownAuto extends LinearOpMode {
+public class TestAuto extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -55,62 +56,25 @@ public class DownAuto extends LinearOpMode {
         }
 
         waitForStart();
+        sleep(1000);
 
-        robot.liftMotor.setPower(0.6);
-        sleep(2250);
-        robot.liftMotor.setPower(0);
+        robot.vacuumMotor.setPower(-0.5);
+        sleep(350);
+        robot.vacuumMotor.setPower(0);
+        robot.chainMotor.setPower(0.3);
+        sleep(1500);
+        robot.vacuumMotor.setPower(0.5);
+        sleep(350);
+        robot.vacuumMotor.setPower(0);
+        sleep(150);
+//        strafe(Direction.LEFT,0.5,1.2);
 
-
-
-//        robot.liftMotor.setPower(0);
-//        turn(Direction.LEFT,0.3,1);
-//        strafe(Direction.RIGHT, 0.4, 1.5);
-//        turn(Direction.RIGHT,0.3,1.25);
-//        robot.liftMotor.setPower(-0.6);
-//        sleep(1500);
-//        robot.liftMotor.setPower(0);
-//        strafe(Direction.RIGHT,0.4,1);
-//        robot.moveStraight(0.2);
-//        sleep(250);
-//        stopMotors();
-//        telemetry.addData("Ended time loop","yes");
-//        telemetry.update();
-//        if (tfod != null) {
-//            tfod.activate();
-//        }
-//
-//        while(goldMineralX <=350 && goldMineralX >=475){
-//            if (tfod != null) {
-//                // getUpdatedRecognitions() will return null if no new information is available since
-//                // the last time that call was made.
-//                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                if (updatedRecognitions != null) {
-//                    if (updatedRecognitions.size() >=1) {
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                                int left = (int)recognition.getTop();
-//                                telemetry.addData("Gold Mineral left: ", left);
-//                                goldMineralX = left;
-//                            }
-//                        }
-//                    }
-//                    telemetry.update();
-//                }
-//            }
-//            if(goldMineralX>=550){
-//                strafe(Direction.LEFT,0.3,0.25);
-//            }else if(goldMineralX<=350) {
-//                strafe(Direction.RIGHT, 0.3, 0.25);
-//            }
-//        }
-//
-//        robot.moveStraight(0.4);
-//        sleep(1500);
-//        stopMotors();
 
     }
 
     public void strafe(Direction direction, double power, double time){
+        double t= time*1000;
+        int t1 = (int) t;
         if(direction == Direction.LEFT){
             robot.LFMotor.setPower(-power);
             robot.RFMotor.setPower(power);

@@ -36,6 +36,7 @@ public class BasicMecanum {
 
         LFMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         LBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        RBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         RFMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

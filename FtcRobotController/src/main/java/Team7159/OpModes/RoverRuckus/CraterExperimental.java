@@ -18,8 +18,8 @@ import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABE
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
 
-@Autonomous(name = "DownAuto")
-public class DownAuto extends LinearOpMode {
+@Autonomous(name = "Crater Experimental")
+public class CraterExperimental extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -41,6 +41,11 @@ public class DownAuto extends LinearOpMode {
 
     int goldMineralX = 0;
 
+    //If pos = 0, it is in the center, then goes to 1 to left and 2 for right
+    int pos = 0;
+
+    List<Recognition>  updatedRecognitions;
+
     @Override
     public void runOpMode(){
 
@@ -53,14 +58,34 @@ public class DownAuto extends LinearOpMode {
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
+       // robot.liftServo.setPosition(0.3);
 
         waitForStart();
 
         robot.liftMotor.setPower(0.6);
-        sleep(2250);
+        sleep(2450);
         robot.liftMotor.setPower(0);
+        sleep(250);
 
+        moveStraight(Direction.BACKWARDS,0.4,0.85);
+        strafe(Direction.LEFT,0.3,2);
+        moveStraight(Direction.FORWARDS,0.3,0.5);
+        turn(Direction.LEFT,0.5,0.92);
+        center();
+        if(pos == 0){
+            strafe(Direction.LEFT,0.5,1.2);
+            center();
+        }
+        if(pos == 1){
+            strafe(Direction.RIGHT,0.5,2.5);
+            center();
+        }
+        if(pos == 2){
+            strafe(Direction.LEFT,0.5,1.2);
+            center();
+        }
 
+        moveStraight(Direction.FORWARDS,0.8,2);
 
 //        robot.liftMotor.setPower(0);
 //        turn(Direction.LEFT,0.3,1);
@@ -110,26 +135,6 @@ public class DownAuto extends LinearOpMode {
 
     }
 
-    public void strafe(Direction direction, double power, double time){
-        if(direction == Direction.LEFT){
-            robot.LFMotor.setPower(-power);
-            robot.RFMotor.setPower(power);
-            robot.LBMotor.setPower(power);
-            robot.RBMotor.setPower(-power);
-            sleep((int)time * 1000);
-            stopMotors();
-        }else if(direction == Direction.RIGHT){
-            robot.LFMotor.setPower(power);
-            robot.RFMotor.setPower(-power);
-            robot.LBMotor.setPower(-power);
-            robot.RBMotor.setPower(power);
-            sleep((int)time * 1000);
-            stopMotors();
-        }else{
-            //Throw an exception about the wrong side
-        }
-    }
-
     public void stopMotors(){
         robot.stop();
     }
@@ -160,22 +165,110 @@ public class DownAuto extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
+    public void strafe(Direction dir, double pow, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        if(dir == Direction.LEFT){
+            robot.LFMotor.setPower(-pow);
+            robot.RFMotor.setPower(pow);
+            robot.LBMotor.setPower(pow);
+            robot.RBMotor.setPower(-pow);
+            sleep(t1);
+            stopMotors();
+        }else if(dir == Direction.RIGHT){
+            robot.LFMotor.setPower(pow);
+            robot.RFMotor.setPower(-pow);
+            robot.LBMotor.setPower(-pow);
+            robot.RBMotor.setPower(pow);
+            sleep(t1);
+            stopMotors();
+        }else{
+            //Throw an exception about the wrong side
+        }
+    }
+
     private void turn(Direction dir, double pow, double time){
+        double t = time*1000;
+        int t1 = (int)t;
         if(dir == Direction.LEFT){
             robot.RFMotor.setPower(pow);
             robot.RBMotor.setPower(pow);
             robot.LFMotor.setPower(-pow);
             robot.LBMotor.setPower(-pow);
-            sleep((int)time*1000);
+            sleep(t1);
         }else if(dir == Direction.RIGHT){
             robot.RFMotor.setPower(-pow);
             robot.RBMotor.setPower(-pow);
             robot.LFMotor.setPower(pow);
             robot.LBMotor.setPower(pow);
-            sleep((int)time*1000);
+            sleep(t1);
         }else{
             //Error
         }
         stopMotors();
+    }
+
+    private void moveStraight(Direction dir, double pow, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        if(dir == Direction.FORWARDS){
+            robot.RFMotor.setPower(pow);
+            robot.RBMotor.setPower(pow);
+            robot.LFMotor.setPower(pow);
+            robot.LBMotor.setPower(pow);
+            sleep(t1);
+        }else if(dir == Direction.BACKWARDS){
+            robot.RFMotor.setPower(-pow);
+            robot.RBMotor.setPower(-pow);
+            robot.LFMotor.setPower(-pow);
+            robot.LBMotor.setPower(-pow);
+            sleep(t1);
+        }else{
+            //Error
+        }
+        stopMotors();
+    }
+
+    public void runUntilCenter(int pos){
+        int gMX = pos;
+        while(gMX <=350 && gMX >=475){
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    if (updatedRecognitions.size() >=1) {
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                int left = (int)recognition.getTop();
+                                telemetry.addData("Gold Mineral left: ", left);
+                                gMX = left;
+                            }
+                        }
+                    }
+                    telemetry.update();
+                }
+            }
+            if(goldMineralX>=550){
+                strafe(Direction.LEFT,0.3,0.25);
+            }else if(goldMineralX<=350) {
+                strafe(Direction.RIGHT, 0.3, 0.25);
+            }
+        }
+    }
+
+    public void center(){
+        updatedRecognitions = tfod.getUpdatedRecognitions();
+        if(updatedRecognitions.size() == 1){
+            Recognition rec = updatedRecognitions.get(0);
+            if(rec.getLabel()==LABEL_GOLD_MINERAL){
+                runUntilCenter((int)rec.getTop());
+                moveStraight(Direction.FORWARDS,0.5,0.5);
+            }else{
+                pos++;
+            }
+        }else{
+            moveStraight(Direction.FORWARDS,0.5,1);
+        }
     }
 }

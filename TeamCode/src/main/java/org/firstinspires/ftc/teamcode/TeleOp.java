@@ -73,20 +73,18 @@ public class TeleOp extends LinearOpMode {
             }
 
             //Makes the crServo go in and out
-            //TODO: Check if the speed is high enough, and direction is consistent
             if(hDir == 0){
-                robot.rServo.setPosition(0.5);
-//                robot.lServo.setPower(0);
+                robot.rServo.setPower(0);
+                robot.lServo.setPower(0);
             }else if(hDir == 1){
-                robot.rServo.setPosition(0.7);
-//                robot.lServo.setPower(-0.7);
+                robot.rServo.setPower(-0.6);
+                robot.lServo.setPower(0.6);
             }else if(hDir == 2){
-                robot.rServo.setPosition(0.3);
-//                robot.lServo.setPower(0.7);
+                robot.rServo.setPower(0.6);
+                robot.lServo.setPower(-0.6);
             }
 
             //Makes the chain rotate, and by extension the rotater
-            //TODO: Check if the speed is fast enough, and direction is consistent
             if(cDir == 0){
                 robot.chainMotor.setPower(0);
             }else if(cDir == 1){
@@ -98,11 +96,11 @@ public class TeleOp extends LinearOpMode {
 
             //TODO: Find the values to set armServo to dump back
             if(gamepad1.right_bumper){
-                robot.liftServo.setPosition(1);
+                robot.liftServo.setPosition(0.9);
             }
 
             if(gamepad1.right_trigger>0.1){
-                robot.liftServo.setPosition(0.32);
+                robot.liftServo.setPosition(0.3);
             }
 
             if(gamepad1.left_bumper){
