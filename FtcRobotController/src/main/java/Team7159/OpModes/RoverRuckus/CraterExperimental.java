@@ -69,10 +69,10 @@ public class CraterExperimental extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-//        vuforia.setFrameQueueCapacity(6);
-//        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-
         initVuforia();
+
+        vuforia.setFrameQueueCapacity(6);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -83,6 +83,10 @@ public class CraterExperimental extends LinearOpMode {
 
         waitForStart();
 
+        if (tfod != null) {
+            tfod.activate();
+        }
+
         robot.liftMotor.setPower(0.6);
         sleep(2450);
         robot.liftMotor.setPower(0);
@@ -90,8 +94,9 @@ public class CraterExperimental extends LinearOpMode {
 
         moveStraight(Direction.BACKWARDS,0.4,0.85);
         strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.5);
+        moveStraight(Direction.FORWARDS,0.3,0.4);
         turn(Direction.LEFT,0.5,0.92);
+        sleep(1000);
         center();
 //        takePic(0);
         if(pos == 0){
@@ -99,6 +104,7 @@ public class CraterExperimental extends LinearOpMode {
             comp = true;
         }else{
             strafe(Direction.LEFT,0.5,1.2);
+            sleep(1000);
             center();
         }
 //        takePic(1);
@@ -106,7 +112,8 @@ public class CraterExperimental extends LinearOpMode {
             moveStraight(Direction.FORWARDS,0.5,1);
             comp = true;
         }else{
-            strafe(Direction.RIGHT,0.5,2.5);
+            strafe(Direction.RIGHT,0.5,2.3);
+            sleep(1000);
             center();
         }
 //        takePic(2);
@@ -293,7 +300,7 @@ public class CraterExperimental extends LinearOpMode {
 
     public void center(){
         updatedRecognitions = tfod.getUpdatedRecognitions();
-        sleep(250);
+        sleep(500);
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel()==LABEL_GOLD_MINERAL){
@@ -303,9 +310,11 @@ public class CraterExperimental extends LinearOpMode {
                 moveStraight(Direction.FORWARDS,0.5,0.5);
             }else{
                 telemetry.addData("found","silver mineral found");
+                telemetry.update();
                 pos++;
             }
         }else{
+            telemetry.addData("Size",updatedRecognitions.size());
             pos++;
             telemetry.addData("center","nothing found");
             telemetry.update();
@@ -333,10 +342,18 @@ public class CraterExperimental extends LinearOpMode {
 
     public void takePic(int count){
         Bitmap bitmap = getBitmap();
+        telemetry.addData("takePic","bitmap");
+        telemetry.update();
         Bitmap newBitmap = RotateBitmap180(bitmap);
-        Bitmap newerBitmap = drawBoundary(newBitmap);
-        Bitmap SideColor = colorSide(newerBitmap);
-        saveImageToExternalStorage(SideColor, count);
+        telemetry.addData("takePic","newBitmap");
+        telemetry.update();
+//        Bitmap newerBitmap = drawBoundary(newBitmap);
+        telemetry.addData("takePic","newerBitmap");
+        telemetry.update();
+//        Bitmap SideColor = colorSide(newerBitmap);
+        telemetry.addData("takePic","colorSide");
+        telemetry.update();
+        saveImageToExternalStorage(newBitmap, count);
     }
 
 }
