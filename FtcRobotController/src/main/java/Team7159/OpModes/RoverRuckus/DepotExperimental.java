@@ -1,18 +1,32 @@
 package Team7159.OpModes.RoverRuckus;
 
+import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.Frame;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 import Team7159.Enums.Direction;
 import Team7159.Enums.Side;
+
+import static Team7159.Utils.BitmapManip.RotateBitmap180;
+import static Team7159.Utils.BitmapManip.colorSide;
+import static Team7159.Utils.BitmapManip.drawBoundary;
+import static Team7159.Utils.BitmapManip.saveImageToExternalStorage;
 
 
 @Autonomous(name = "Depot Experimental")
@@ -24,13 +38,16 @@ public class DepotExperimental extends LinearOpMode {
 
     Side side;
 
+    //Used for vuforia pictures
+    VuforiaLocalizer vuforia;
+    Frame frame;
+    Bitmap bitmap;
+
     private static final String VUFORIA_KEY = "AQ8rpDD/////AAABmRNIMKzPaEhBgamlRTL2RRMKI6zA+IW8Qqd6l0v65fwa8N2l" +
             "n17xMthqidBc7uWyTNA1pYUodjK8ngEvudjz4FeoJbQpXxwYm2/H5XXwlWywZfUHa74lGuma90fRmTuEeFwAsDTZ4JfXojf719" +
             "wTliDCdlKCOkQuuvU0Cx0JyzdYT/NnOYZWroHx2maby73wQW1T76aSlKsHE/cZ1FmVoOokP+HqIfaOPpUR/gVkDgqyB7XAOaBd" +
             "kHzY3FOv7oCC7Ybn7jbAdVuJX8uow08atIH0dwmS/LC6BqpakDGFNj4JAyyd9cnz43UWBMEz6cTBk9Um2+a/5XLfV+W7RaHDEF" +
             "fs726qLAIagk9Nd2CzIg/x";
-
-    private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
 
@@ -40,6 +57,8 @@ public class DepotExperimental extends LinearOpMode {
 
     //If pos = 0, it is in the center, then goes to 1 to left and 2 for right
     int pos = 0;
+
+    boolean comp = false;
 
     List<Recognition> updatedRecognitions;
 
@@ -57,6 +76,10 @@ public class DepotExperimental extends LinearOpMode {
         }
         // robot.liftServo.setPosition(0.3);
 
+        vuforia.setFrameQueueCapacity(6);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
+
         waitForStart();
 
         robot.liftMotor.setPower(0.6);
@@ -69,31 +92,37 @@ public class DepotExperimental extends LinearOpMode {
         moveStraight(Direction.FORWARDS,0.3,0.5);
         turn(Direction.LEFT,0.5,0.92);
         center();
+        takePic(5);
         if(pos == 0){
+            moveStraight(Direction.FORWARDS,0.8,1);
+            comp = true;
+        }else{
             strafe(Direction.LEFT,0.5,1.2);
             center();
         }
-        if(pos == 1){
+        takePic(6);
+        if(pos == 1 && !comp){
+            moveStraight(Direction.FORWARDS,0.8,1);
+            comp = true;
+        }else{
             strafe(Direction.RIGHT,0.5,2.5);
             center();
         }
-        if(pos == 2){
-            strafe(Direction.LEFT,0.5,1.2);
-            center();
+        takePic(7);
+        if(!comp){
+            moveStraight(Direction.FORWARDS,0.5,0.7);
         }
 
         moveStraight(Direction.FORWARDS,0.8,1);
 
-        robot.vacuumMotor.setPower(-0.5);
-        sleep(350);
-        robot.vacuumMotor.setPower(0);
-        robot.chainMotor.setPower(0.3);
-        sleep(350);
-        robot.vacuumMotor.setPower(0.5);
-        sleep(350);
+        robot.vacuumMotor.setPower(-0.3);
+        sleep(700);
+        robot.stop();
+        sleep(150);
+        robot.vacuumMotor.setPower(0.3);
+        sleep(800);
         robot.vacuumMotor.setPower(0);
         sleep(150);
-
 
 //        robot.liftMotor.setPower(0);
 //        turn(Direction.LEFT,0.3,1);
@@ -265,19 +294,54 @@ public class DepotExperimental extends LinearOpMode {
         }
     }
 
+    //If one and gold, will center else no
+
     public void center(){
         updatedRecognitions = tfod.getUpdatedRecognitions();
+        sleep(250);
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel()==LABEL_GOLD_MINERAL){
+                telemetry.addData("found","gold mineral found");
+                telemetry.update();
                 runUntilCenter((int)rec.getTop());
                 moveStraight(Direction.FORWARDS,0.5,0.5);
             }else{
+                telemetry.addData("found","silver mineral found");
                 pos++;
             }
         }else{
-            moveStraight(Direction.FORWARDS,0.5,1);
+            pos++;
+            telemetry.addData("center","nothing found");
+            telemetry.update();
+//            moveStraight(Direction.FORWARDS,0.5,1);
         }
+    }
+
+    public Bitmap getBitmap(){
+        if(vuforia.getFrameQueue().peek() != null){
+            try {
+                frame = vuforia.getFrameQueue().take();
+            }catch(InterruptedException e){}
+        }
+        for (int i = 0; i < frame.getNumImages(); i++) {
+            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+                Image image = frame.getImage(i);
+                ByteBuffer pixels = image.getPixels();
+                bitmap = Bitmap.createBitmap(new DisplayMetrics(),image.getWidth(),image.getHeight(),Bitmap.Config.RGB_565);
+                bitmap.copyPixelsFromBuffer(pixels);
+                return bitmap;
+            }
+        }
+        return bitmap;
+    }
+
+    public void takePic(int count){
+        Bitmap bitmap = getBitmap();
+        Bitmap newBitmap = RotateBitmap180(bitmap);
+        Bitmap newerBitmap = drawBoundary(newBitmap);
+        Bitmap SideColor = colorSide(newerBitmap);
+        saveImageToExternalStorage(SideColor, count);
     }
 
 }

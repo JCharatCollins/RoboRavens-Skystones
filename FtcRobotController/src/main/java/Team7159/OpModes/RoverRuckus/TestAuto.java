@@ -2,6 +2,7 @@ package Team7159.OpModes.RoverRuckus;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -57,14 +58,14 @@ public class TestAuto extends LinearOpMode {
 
         waitForStart();
         sleep(1000);
-
-        robot.vacuumMotor.setPower(-0.5);
-        sleep(350);
-        robot.vacuumMotor.setPower(0);
-        robot.chainMotor.setPower(0.3);
-        sleep(1500);
-        robot.vacuumMotor.setPower(0.5);
-        sleep(350);
+        robot.vacuumMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.vacuumMotor.setPower(-0.3);
+        sleep(700);
+        //robot.moveStraight(-0.3);
+        //sleep(700);
+        //robot.stop();
+        robot.vacuumMotor.setPower(0.3);
+        sleep(800);
         robot.vacuumMotor.setPower(0);
         sleep(150);
 //        strafe(Direction.LEFT,0.5,1.2);
