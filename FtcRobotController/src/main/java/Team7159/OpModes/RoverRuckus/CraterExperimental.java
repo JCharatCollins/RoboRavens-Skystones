@@ -1,5 +1,6 @@
 package Team7159.OpModes.RoverRuckus;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.util.DisplayMetrics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -38,12 +39,8 @@ public class CraterExperimental extends LinearOpMode {
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
 
-    //Used for vuforia pictures
+    //Used for vuforia
     VuforiaLocalizer vuforia;
-    Frame frame;
-    Bitmap bitmap;
-
-    Side side;
 
     private static final String VUFORIA_KEY = "AQ8rpDD/////AAABmRNIMKzPaEhBgamlRTL2RRMKI6zA+IW8Qqd6l0v65fwa8N2l" +
             "n17xMthqidBc7uWyTNA1pYUodjK8ngEvudjz4FeoJbQpXxwYm2/H5XXwlWywZfUHa74lGuma90fRmTuEeFwAsDTZ4JfXojf719" +
@@ -62,18 +59,23 @@ public class CraterExperimental extends LinearOpMode {
 
     List<Recognition>  updatedRecognitions;
 
-    boolean comp = false;
+    //tells whether or not it completed sampling
+    private boolean comp = false;
 
     @Override
     public void runOpMode(){
 
+        //Initializes the robot with hardwareMap
         robot.init(hardwareMap);
+
 
         initVuforia();
 
+        //Sets up vuforia to take pictures
         vuforia.setFrameQueueCapacity(6);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
 
+        //Initializes the object detector
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
@@ -87,93 +89,63 @@ public class CraterExperimental extends LinearOpMode {
             tfod.activate();
         }
 
+        //Goes down from lander
         robot.liftMotor.setPower(0.6);
-        sleep(2450);
+        sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
 
-        moveStraight(Direction.BACKWARDS,0.4,0.85);
+        //Moves out of lander and orients in front of center block
+        moveStraight(Direction.BACKWARDS,0.4,0.7);
         strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.4);
+        moveStraight(Direction.FORWARDS,0.3,0.5);
         turn(Direction.LEFT,0.5,0.92);
-        sleep(1000);
+        sleep(500);
+
+        //Checks the center location for mineral and determines what it is
+        //If it determines it is gold, drives forward to knock if off, else increments pos
         center();
-//        takePic(0);
+
+        //Takes picture
+        takePic();
+
+        //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
             moveStraight(Direction.FORWARDS,0.5,1);
             comp = true;
         }else{
+            //pos will be equal to 1, meaning was either silver or not found.
+            //Check to strafe left
             strafe(Direction.LEFT,0.5,1.2);
-            sleep(1000);
+            sleep(200);
             center();
         }
-//        takePic(1);
+
+        //Takes picture
+        takePic();
+
+        //If it's 1 this position or last was gold, so if its not completed its this position
         if(pos == 1 && !comp){
             moveStraight(Direction.FORWARDS,0.5,1);
             comp = true;
-        }else{
+        } else if(pos == 2){
+            //If position is 2 then it means it must be the last one
             strafe(Direction.RIGHT,0.5,2.3);
             sleep(1000);
             center();
         }
-//        takePic(2);
+
+        takePic();
+
         if(!comp){
+            //If we're not complete yet it must be right position
             moveStraight(Direction.FORWARDS,0.5,1);
         }
 
+        //Sets down the vacuum to get above the "vertical barrier"
         robot.vacuumMotor.setPower(-0.3);
-        sleep(700);
+        sleep(1000);
         robot.vacuumMotor.setPower(0);
-
-
-//        moveStraight(Direction.FORWARDS,0.8,1);
-
-//        robot.liftMotor.setPower(0);
-//        turn(Direction.LEFT,0.3,1);
-//        strafe(Direction.RIGHT, 0.4, 1.5);
-//        turn(Direction.RIGHT,0.3,1.25);
-//        robot.liftMotor.setPower(-0.6);
-//        sleep(1500);
-//        robot.liftMotor.setPower(0);
-//        strafe(Direction.RIGHT,0.4,1);
-//        robot.moveStraight(0.2);
-//        sleep(250);
-//        stopMotors();
-//        telemetry.addData("Ended time loop","yes");
-//        telemetry.update();
-//        if (tfod != null) {
-//            tfod.activate();
-//        }
-//
-//        while(goldMineralX <=350 && goldMineralX >=475){
-//            if (tfod != null) {
-//                // getUpdatedRecognitions() will return null if no new information is available since
-//                // the last time that call was made.
-//                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                if (updatedRecognitions != null) {
-//                    if (updatedRecognitions.size() >=1) {
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                                int left = (int)recognition.getTop();
-//                                telemetry.addData("Gold Mineral left: ", left);
-//                                goldMineralX = left;
-//                            }
-//                        }
-//                    }
-//                    telemetry.update();
-//                }
-//            }
-//            if(goldMineralX>=550){
-//                strafe(Direction.LEFT,0.3,0.25);
-//            }else if(goldMineralX<=350) {
-//                strafe(Direction.RIGHT, 0.3, 0.25);
-//            }
-//        }
-//
-//        robot.moveStraight(0.4);
-//        sleep(1500);
-//        stopMotors();
-
     }
 
     public void stopMotors(){
@@ -300,7 +272,6 @@ public class CraterExperimental extends LinearOpMode {
 
     public void center(){
         updatedRecognitions = tfod.getUpdatedRecognitions();
-        sleep(500);
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel()==LABEL_GOLD_MINERAL){
@@ -322,38 +293,33 @@ public class CraterExperimental extends LinearOpMode {
         }
     }
 
-    public Bitmap getBitmap(){
-        if(vuforia.getFrameQueue().peek() != null){
-            try {
-                frame = vuforia.getFrameQueue().take();
-            }catch(InterruptedException e){}
-        }
-        for (int i = 0; i < frame.getNumImages(); i++) {
-            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
-                Image image = frame.getImage(i);
-                ByteBuffer pixels = image.getPixels();
-                bitmap = Bitmap.createBitmap(new DisplayMetrics(),image.getWidth(),image.getHeight(),Bitmap.Config.RGB_565);
-                bitmap.copyPixelsFromBuffer(pixels);
-                return bitmap;
+    public Bitmap getBitmap() throws InterruptedException{
+        Frame frame;
+        Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);
+        if (vuforia.getFrameQueue().peek() != null) {
+            frame = vuforia.getFrameQueue().take();
+            for (int i = 0; i < frame.getNumImages(); i++) {
+                if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+                    Image image = frame.getImage(i);
+                    ByteBuffer pixels = image.getPixels();
+                    Matrix matrix = new Matrix();
+                    matrix.preScale(-1, -1);
+                    Bitmap bitmap = Bitmap.createBitmap(new DisplayMetrics(), image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                    bitmap.copyPixelsFromBuffer(pixels);
+                    return bitmap;
+                }
             }
         }
-        return bitmap;
+        return BM0;
     }
 
-    public void takePic(int count){
-        Bitmap bitmap = getBitmap();
-        telemetry.addData("takePic","bitmap");
-        telemetry.update();
-        Bitmap newBitmap = RotateBitmap180(bitmap);
-        telemetry.addData("takePic","newBitmap");
-        telemetry.update();
-//        Bitmap newerBitmap = drawBoundary(newBitmap);
-        telemetry.addData("takePic","newerBitmap");
-        telemetry.update();
-//        Bitmap SideColor = colorSide(newerBitmap);
-        telemetry.addData("takePic","colorSide");
-        telemetry.update();
-        saveImageToExternalStorage(newBitmap, count);
+    public void takePic(){
+        try {
+            Bitmap bitmap = getBitmap();
+            Bitmap newBitmap = RotateBitmap180(bitmap);
+            saveImageToExternalStorage(newBitmap);
+        }catch(Exception e){}
     }
 
 }

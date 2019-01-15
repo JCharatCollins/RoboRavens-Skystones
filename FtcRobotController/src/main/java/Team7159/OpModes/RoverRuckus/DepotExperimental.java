@@ -1,6 +1,7 @@
 package Team7159.OpModes.RoverRuckus;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.util.DisplayMetrics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -318,30 +319,35 @@ public class DepotExperimental extends LinearOpMode {
         }
     }
 
-    public Bitmap getBitmap(){
-        if(vuforia.getFrameQueue().peek() != null){
-            try {
-                frame = vuforia.getFrameQueue().take();
-            }catch(InterruptedException e){}
-        }
-        for (int i = 0; i < frame.getNumImages(); i++) {
-            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
-                Image image = frame.getImage(i);
-                ByteBuffer pixels = image.getPixels();
-                bitmap = Bitmap.createBitmap(new DisplayMetrics(),image.getWidth(),image.getHeight(),Bitmap.Config.RGB_565);
-                bitmap.copyPixelsFromBuffer(pixels);
-                return bitmap;
+    public Bitmap getBitmap() throws InterruptedException{
+        Frame frame;
+        Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);
+        if (vuforia.getFrameQueue().peek() != null) {
+            frame = vuforia.getFrameQueue().take();
+            for (int i = 0; i < frame.getNumImages(); i++) {
+                if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+                    Image image = frame.getImage(i);
+                    ByteBuffer pixels = image.getPixels();
+                    Matrix matrix = new Matrix();
+                    matrix.preScale(-1, -1);
+                    Bitmap bitmap = Bitmap.createBitmap(new DisplayMetrics(), image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                    bitmap.copyPixelsFromBuffer(pixels);
+                    return bitmap;
+                }
             }
         }
-        return bitmap;
+        return BM0;
     }
 
     public void takePic(int count){
-        Bitmap bitmap = getBitmap();
+        try {
+            Bitmap bitmap = getBitmap();
+        }catch(Exception e){}
         Bitmap newBitmap = RotateBitmap180(bitmap);
         Bitmap newerBitmap = drawBoundary(newBitmap);
         Bitmap SideColor = colorSide(newerBitmap);
-        saveImageToExternalStorage(SideColor, count);
+        saveImageToExternalStorage(SideColor);
     }
 
 }

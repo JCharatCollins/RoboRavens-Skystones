@@ -101,11 +101,13 @@ public class BitmapManip {
         return newBitmap;
     }
 
-    public static void saveImageToExternalStorage(Bitmap finalBitmap, int num) {
+    public static void saveImageToExternalStorage(Bitmap finalBitmap) {
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
-        String fname = "Image-" + num + ".jpg";
+//        System.currentTimeMillis();
+        String date = String.valueOf(System.currentTimeMillis());
+        String fname = "Image-"  +date+ ".jpg";
         File file = new File(myDir, fname);
         try {
             FileOutputStream out = new FileOutputStream(file);

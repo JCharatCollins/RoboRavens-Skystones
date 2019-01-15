@@ -27,6 +27,7 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode(){
         robot.init(hardwareMap);
+        robot.liftServo.setPosition(0.3);
         waitForStart();
         while(opModeIsActive()){
 

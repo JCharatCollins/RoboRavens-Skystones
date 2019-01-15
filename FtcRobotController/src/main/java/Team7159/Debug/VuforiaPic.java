@@ -95,7 +95,7 @@ public class VuforiaPic extends LinearOpMode {
             Bitmap newBitmap = RotateBitmap180(bitmap);
             Bitmap newerBitmap = drawBoundary(newBitmap);
             Bitmap SideColor = colorSide(newerBitmap);
-            saveImageToExternalStorage(SideColor, count);
+            saveImageToExternalStorage(SideColor);
         }
     }
 }
