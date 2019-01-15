@@ -1,5 +1,4 @@
 package Team7159.OpModes.RoverRuckus;
-
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.DisplayMetrics;
@@ -12,7 +11,6 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -22,11 +20,8 @@ import java.util.List;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 import Team7159.Enums.Direction;
-import Team7159.Enums.Side;
 
 import static Team7159.Utils.BitmapManip.RotateBitmap180;
-import static Team7159.Utils.BitmapManip.colorSide;
-import static Team7159.Utils.BitmapManip.drawBoundary;
 import static Team7159.Utils.BitmapManip.saveImageToExternalStorage;
 
 
@@ -37,12 +32,9 @@ public class DepotExperimental extends LinearOpMode {
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
-    Side side;
 
-    //Used for vuforia pictures
-    VuforiaLocalizer vuforia;
-    Frame frame;
-    Bitmap bitmap;
+    //Used for vuforia
+    private VuforiaLocalizer vuforia;
 
     private static final String VUFORIA_KEY = "AQ8rpDD/////AAABmRNIMKzPaEhBgamlRTL2RRMKI6zA+IW8Qqd6l0v65fwa8N2l" +
             "n17xMthqidBc7uWyTNA1pYUodjK8ngEvudjz4FeoJbQpXxwYm2/H5XXwlWywZfUHa74lGuma90fRmTuEeFwAsDTZ4JfXojf719" +
@@ -52,24 +44,28 @@ public class DepotExperimental extends LinearOpMode {
 
     private TFObjectDetector tfod;
 
-    VacuumBotV2 robot = new VacuumBotV2();
-
-    int goldMineralX = 0;
+    private VacuumBotV2 robot = new VacuumBotV2();
 
     //If pos = 0, it is in the center, then goes to 1 to left and 2 for right
-    int pos = 0;
+    private int pos = 0;
 
-    boolean comp = false;
-
-    List<Recognition> updatedRecognitions;
+    //tells whether or not it completed sampling
+    private boolean comp = false;
 
     @Override
     public void runOpMode(){
 
+        //Initializes the robot with hardwareMap
         robot.init(hardwareMap);
+
 
         initVuforia();
 
+        //Sets up vuforia to take pictures
+        vuforia.setFrameQueueCapacity(6);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
+        //Initializes the object detector
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
@@ -77,103 +73,112 @@ public class DepotExperimental extends LinearOpMode {
         }
         // robot.liftServo.setPosition(0.3);
 
-        vuforia.setFrameQueueCapacity(6);
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-
-
         waitForStart();
 
+        if (tfod != null) {
+            tfod.activate();
+        }
+
+        //Goes down from lander
         robot.liftMotor.setPower(0.6);
-        sleep(2450);
+        sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
 
-        moveStraight(Direction.BACKWARDS,0.4,0.85);
+        //Moves out of lander and orients in front of center block
+        moveStraight(Direction.BACKWARDS,0.4,0.7);
         strafe(Direction.LEFT,0.3,2);
         moveStraight(Direction.FORWARDS,0.3,0.5);
         turn(Direction.LEFT,0.5,0.92);
+        sleep(500);
+
+        //Checks the center location for mineral and determines what it is
+        //If it determines it is gold, drives forward to knock if off, else increments pos
         center();
-        takePic(5);
+
+        //Takes picture
+        takePic();
+
+        //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
-            moveStraight(Direction.FORWARDS,0.8,1);
+            moveStraight(Direction.FORWARDS,0.5,1);
             comp = true;
         }else{
+            //pos will be equal to 1, meaning was either silver or not found.
+            //Check to strafe left
             strafe(Direction.LEFT,0.5,1.2);
+            sleep(200);
             center();
         }
-        takePic(6);
+
+        //Takes picture
+        takePic();
+
+        //If it's 1 this position or last was gold, so if its not completed its this position
         if(pos == 1 && !comp){
-            moveStraight(Direction.FORWARDS,0.8,1);
+            moveStraight(Direction.FORWARDS,0.5,1);
             comp = true;
-        }else{
-            strafe(Direction.RIGHT,0.5,2.5);
+        } else if(pos == 2){
+            //If position is 2 then it means it must be the last one
+            strafe(Direction.RIGHT,0.5,2.3);
+            sleep(1000);
             center();
         }
-        takePic(7);
+
+        takePic();
+
         if(!comp){
-            moveStraight(Direction.FORWARDS,0.5,0.7);
+            //If we're not complete yet it must be right position
+            moveStraight(Direction.FORWARDS,0.5,1);
         }
 
-        moveStraight(Direction.FORWARDS,0.8,1);
 
+        //WHATEVER IS BELOW HERE HAS NOT BEEN TESTED, HENCE EXPERIMENTAL
+
+
+
+        //This should equalize positions to against the wall, back facing the crater
+        if(pos == 0) {
+            turn(Direction.LEFT,0.5,0.46);
+            strafe(Direction.RIGHT,0.3,1);
+        }else if(pos == 1){
+            turn(Direction.RIGHT,0.5,0.46);
+            moveStraight(Direction.FORWARDS,0.3,0.3);
+            strafe(Direction.RIGHT,0.3,1);
+            turn(Direction.LEFT,0.5,0.92);
+            strafe(Direction.RIGHT,0.3,1);
+        }else if(pos == 2){
+            turn(Direction.LEFT,0.5,0.46);
+            moveStraight(Direction.FORWARDS,0.3,0.5);
+        }
+
+        //Should set down the team marker and get out
         robot.vacuumMotor.setPower(-0.3);
-        sleep(700);
-        robot.stop();
-        sleep(150);
-        robot.vacuumMotor.setPower(0.3);
-        sleep(800);
+        sleep(1000);
         robot.vacuumMotor.setPower(0);
-        sleep(150);
+        moveStraight(Direction.BACKWARDS,0.5,1);
+        robot.vacuumMotor.setPower(0.3);
+        sleep(1000);
+        robot.vacuumMotor.setPower(0);
 
-//        robot.liftMotor.setPower(0);
-//        turn(Direction.LEFT,0.3,1);
-//        strafe(Direction.RIGHT, 0.4, 1.5);
-//        turn(Direction.RIGHT,0.3,1.25);
-//        robot.liftMotor.setPower(-0.6);
-//        sleep(1500);
-//        robot.liftMotor.setPower(0);
-//        strafe(Direction.RIGHT,0.4,1);
-//        robot.moveStraight(0.2);
-//        sleep(250);
-//        stopMotors();
-//        telemetry.addData("Ended time loop","yes");
-//        telemetry.update();
-//        if (tfod != null) {
-//            tfod.activate();
-//        }
-//
-//        while(goldMineralX <=350 && goldMineralX >=475){
-//            if (tfod != null) {
-//                // getUpdatedRecognitions() will return null if no new information is available since
-//                // the last time that call was made.
-//                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                if (updatedRecognitions != null) {
-//                    if (updatedRecognitions.size() >=1) {
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                                int left = (int)recognition.getTop();
-//                                telemetry.addData("Gold Mineral left: ", left);
-//                                goldMineralX = left;
-//                            }
-//                        }
-//                    }
-//                    telemetry.update();
-//                }
-//            }
-//            if(goldMineralX>=550){
-//                strafe(Direction.LEFT,0.3,0.25);
-//            }else if(goldMineralX<=350) {
-//                strafe(Direction.RIGHT, 0.3, 0.25);
-//            }
-//        }
-//
-//        robot.moveStraight(0.4);
-//        sleep(1500);
-//        stopMotors();
+        //Drive towards crater
+        moveStraight(Direction.BACKWARDS,0.5,2);
+        turn(Direction.LEFT,0.5,1.8);
+        moveStraight(Direction.FORWARDS,0.5,2);
+
+        //Sets down vacuumMotor to get above crater
+        robot.vacuumMotor.setPower(-0.3);
+        sleep(1000);
+        robot.vacuumMotor.setPower(0);
+
+        //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
+        //TODO: Add in code to drop off marker in depot
+
+        //Sets down the vacuum to get above the "vertical barrier"
 
     }
 
-    public void stopMotors(){
+    private void stopMotors(){
         robot.stop();
     }
 
@@ -203,7 +208,7 @@ public class DepotExperimental extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
-    public void strafe(Direction dir, double pow, double time){
+    private void strafe(Direction dir, double pow, double time){
         double t = time*1000;
         int t1 = (int)t;
         if(dir == Direction.LEFT){
@@ -220,8 +225,6 @@ public class DepotExperimental extends LinearOpMode {
             robot.RBMotor.setPower(pow);
             sleep(t1);
             stopMotors();
-        }else{
-            //Throw an exception about the wrong side
         }
     }
 
@@ -240,8 +243,6 @@ public class DepotExperimental extends LinearOpMode {
             robot.LFMotor.setPower(pow);
             robot.LBMotor.setPower(pow);
             sleep(t1);
-        }else{
-            //Error
         }
         stopMotors();
     }
@@ -261,13 +262,11 @@ public class DepotExperimental extends LinearOpMode {
             robot.LFMotor.setPower(-pow);
             robot.LBMotor.setPower(-pow);
             sleep(t1);
-        }else{
-            //Error
         }
         stopMotors();
     }
 
-    public void runUntilCenter(int pos){
+    private void runUntilCenter(int pos){
         int gMX = pos;
         while(gMX <=350 && gMX >=475){
             if (tfod != null) {
@@ -287,31 +286,30 @@ public class DepotExperimental extends LinearOpMode {
                     telemetry.update();
                 }
             }
-            if(goldMineralX>=550){
+            if(gMX>=550){
                 strafe(Direction.LEFT,0.3,0.25);
-            }else if(goldMineralX<=350) {
+            }else if(gMX<=350) {
                 strafe(Direction.RIGHT, 0.3, 0.25);
             }
         }
     }
 
-    //If one and gold, will center else no
-
     public void center(){
-        updatedRecognitions = tfod.getUpdatedRecognitions();
-        sleep(250);
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
-            if(rec.getLabel()==LABEL_GOLD_MINERAL){
+            if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
                 telemetry.addData("found","gold mineral found");
                 telemetry.update();
                 runUntilCenter((int)rec.getTop());
                 moveStraight(Direction.FORWARDS,0.5,0.5);
             }else{
                 telemetry.addData("found","silver mineral found");
+                telemetry.update();
                 pos++;
             }
         }else{
+            telemetry.addData("Size",updatedRecognitions.size());
             pos++;
             telemetry.addData("center","nothing found");
             telemetry.update();
@@ -319,7 +317,7 @@ public class DepotExperimental extends LinearOpMode {
         }
     }
 
-    public Bitmap getBitmap() throws InterruptedException{
+    private Bitmap getBitmap() throws InterruptedException{
         Frame frame;
         Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);
         if (vuforia.getFrameQueue().peek() != null) {
@@ -340,14 +338,14 @@ public class DepotExperimental extends LinearOpMode {
         return BM0;
     }
 
-    public void takePic(int count){
+    private void takePic(){
         try {
             Bitmap bitmap = getBitmap();
-        }catch(Exception e){}
-        Bitmap newBitmap = RotateBitmap180(bitmap);
-        Bitmap newerBitmap = drawBoundary(newBitmap);
-        Bitmap SideColor = colorSide(newerBitmap);
-        saveImageToExternalStorage(SideColor);
+            Bitmap newBitmap = RotateBitmap180(bitmap);
+            saveImageToExternalStorage(newBitmap);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

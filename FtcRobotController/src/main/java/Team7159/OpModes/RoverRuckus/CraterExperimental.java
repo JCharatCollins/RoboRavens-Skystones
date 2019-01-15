@@ -20,15 +20,9 @@ import java.util.List;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 import Team7159.Enums.Direction;
-import Team7159.Enums.Side;
 
 import static Team7159.Utils.BitmapManip.RotateBitmap180;
-import static Team7159.Utils.BitmapManip.colorSide;
-import static Team7159.Utils.BitmapManip.drawBoundary;
 import static Team7159.Utils.BitmapManip.saveImageToExternalStorage;
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_GOLD_MINERAL;
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_SILVER_MINERAL;
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
 
 @Autonomous(name = "Crater Experimental")
@@ -40,7 +34,7 @@ public class CraterExperimental extends LinearOpMode {
 
 
     //Used for vuforia
-    VuforiaLocalizer vuforia;
+    private VuforiaLocalizer vuforia;
 
     private static final String VUFORIA_KEY = "AQ8rpDD/////AAABmRNIMKzPaEhBgamlRTL2RRMKI6zA+IW8Qqd6l0v65fwa8N2l" +
             "n17xMthqidBc7uWyTNA1pYUodjK8ngEvudjz4FeoJbQpXxwYm2/H5XXwlWywZfUHa74lGuma90fRmTuEeFwAsDTZ4JfXojf719" +
@@ -50,14 +44,10 @@ public class CraterExperimental extends LinearOpMode {
 
     private TFObjectDetector tfod;
 
-    VacuumBotV2 robot = new VacuumBotV2();
-
-    int goldMineralX = 0;
+    private VacuumBotV2 robot = new VacuumBotV2();
 
     //If pos = 0, it is in the center, then goes to 1 to left and 2 for right
-    int pos = 0;
-
-    List<Recognition>  updatedRecognitions;
+    private int pos = 0;
 
     //tells whether or not it completed sampling
     private boolean comp = false;
@@ -142,13 +132,16 @@ public class CraterExperimental extends LinearOpMode {
             moveStraight(Direction.FORWARDS,0.5,1);
         }
 
+        //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
+        //TODO: Add in code to drop off marker in depot
+
         //Sets down the vacuum to get above the "vertical barrier"
         robot.vacuumMotor.setPower(-0.3);
         sleep(1000);
         robot.vacuumMotor.setPower(0);
     }
 
-    public void stopMotors(){
+    private void stopMotors(){
         robot.stop();
     }
 
@@ -178,7 +171,7 @@ public class CraterExperimental extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
-    public void strafe(Direction dir, double pow, double time){
+    private void strafe(Direction dir, double pow, double time){
         double t = time*1000;
         int t1 = (int)t;
         if(dir == Direction.LEFT){
@@ -195,8 +188,6 @@ public class CraterExperimental extends LinearOpMode {
             robot.RBMotor.setPower(pow);
             sleep(t1);
             stopMotors();
-        }else{
-            //Throw an exception about the wrong side
         }
     }
 
@@ -215,8 +206,6 @@ public class CraterExperimental extends LinearOpMode {
             robot.LFMotor.setPower(pow);
             robot.LBMotor.setPower(pow);
             sleep(t1);
-        }else{
-            //Error
         }
         stopMotors();
     }
@@ -236,13 +225,11 @@ public class CraterExperimental extends LinearOpMode {
             robot.LFMotor.setPower(-pow);
             robot.LBMotor.setPower(-pow);
             sleep(t1);
-        }else{
-            //Error
         }
         stopMotors();
     }
 
-    public void runUntilCenter(int pos){
+    private void runUntilCenter(int pos){
         int gMX = pos;
         while(gMX <=350 && gMX >=475){
             if (tfod != null) {
@@ -262,19 +249,19 @@ public class CraterExperimental extends LinearOpMode {
                     telemetry.update();
                 }
             }
-            if(goldMineralX>=550){
+            if(gMX>=550){
                 strafe(Direction.LEFT,0.3,0.25);
-            }else if(goldMineralX<=350) {
+            }else if(gMX<=350) {
                 strafe(Direction.RIGHT, 0.3, 0.25);
             }
         }
     }
 
     public void center(){
-        updatedRecognitions = tfod.getUpdatedRecognitions();
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
-            if(rec.getLabel()==LABEL_GOLD_MINERAL){
+            if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
                 telemetry.addData("found","gold mineral found");
                 telemetry.update();
                 runUntilCenter((int)rec.getTop());
@@ -293,7 +280,7 @@ public class CraterExperimental extends LinearOpMode {
         }
     }
 
-    public Bitmap getBitmap() throws InterruptedException{
+    private Bitmap getBitmap() throws InterruptedException{
         Frame frame;
         Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);
         if (vuforia.getFrameQueue().peek() != null) {
@@ -314,12 +301,14 @@ public class CraterExperimental extends LinearOpMode {
         return BM0;
     }
 
-    public void takePic(){
+    private void takePic(){
         try {
             Bitmap bitmap = getBitmap();
             Bitmap newBitmap = RotateBitmap180(bitmap);
             saveImageToExternalStorage(newBitmap);
-        }catch(Exception e){}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
