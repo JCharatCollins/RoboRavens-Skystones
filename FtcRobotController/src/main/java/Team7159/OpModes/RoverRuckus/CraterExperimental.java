@@ -132,13 +132,30 @@ public class CraterExperimental extends LinearOpMode {
             moveStraight(Direction.FORWARDS,0.5,1);
         }
 
-        //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
-        //TODO: Add in code to drop off marker in depot
+        //Pulls out to a safe distance
+        moveStraight(Direction.BACKWARDS,0.5,1.5);
 
-        //Sets down the vacuum to get above the "vertical barrier"
-        robot.vacuumMotor.setPower(-0.3);
-        sleep(1000);
-        robot.vacuumMotor.setPower(0);
+        //Strafe to wall and turn facing crater
+        strafe(Direction.LEFT,0.3,2);
+        turn(Direction.RIGHT,0.5,0.46);
+
+        //Faces depot and moves towards it
+        turn(Direction.RIGHT,0.5,1.8);
+        moveStraight(Direction.FORWARDS,0.5,1);
+
+        //Sets down the marker and pulls out
+        lower(0.3,1);
+        moveStraight(Direction.BACKWARDS,0.5,1);
+        raise(0.3,1);
+
+        //Drive towards crater
+        moveStraight(Direction.BACKWARDS,0.5,2);
+        turn(Direction.LEFT,0.5,1.8);
+        moveStraight(Direction.FORWARDS,0.5,2);
+
+        //Sets down vacuumMotor to get above crater
+        lower(0.3,1);
+
     }
 
     private void stopMotors(){
@@ -170,6 +187,7 @@ public class CraterExperimental extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
+
 
     private void strafe(Direction dir, double pow, double time){
         double t = time*1000;
@@ -227,6 +245,22 @@ public class CraterExperimental extends LinearOpMode {
             sleep(t1);
         }
         stopMotors();
+    }
+
+    private void raise(double power, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        robot.vacuumMotor.setPower(Math.abs(power));
+        sleep(t1);
+        robot.vacuumMotor.setPower(0);
+    }
+
+    private void lower(double power, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        robot.vacuumMotor.setPower(-Math.abs(power));
+        sleep(t1);
+        robot.vacuumMotor.setPower(0);
     }
 
     private void runUntilCenter(int pos){

@@ -153,13 +153,9 @@ public class DepotExperimental extends LinearOpMode {
         }
 
         //Should set down the team marker and get out
-        robot.vacuumMotor.setPower(-0.3);
-        sleep(1000);
-        robot.vacuumMotor.setPower(0);
+        lower(0.3,1);
         moveStraight(Direction.BACKWARDS,0.5,1);
-        robot.vacuumMotor.setPower(0.3);
-        sleep(1000);
-        robot.vacuumMotor.setPower(0);
+        raise(0.3,1);
 
         //Drive towards crater
         moveStraight(Direction.BACKWARDS,0.5,2);
@@ -167,9 +163,7 @@ public class DepotExperimental extends LinearOpMode {
         moveStraight(Direction.FORWARDS,0.5,2);
 
         //Sets down vacuumMotor to get above crater
-        robot.vacuumMotor.setPower(-0.3);
-        sleep(1000);
-        robot.vacuumMotor.setPower(0);
+        lower(0.3,1);
 
         //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
         //TODO: Add in code to drop off marker in depot
@@ -265,6 +259,23 @@ public class DepotExperimental extends LinearOpMode {
         }
         stopMotors();
     }
+
+    private void raise(double power, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        robot.vacuumMotor.setPower(Math.abs(power));
+        sleep(t1);
+        robot.vacuumMotor.setPower(0);
+    }
+
+    private void lower(double power, double time){
+        double t = time*1000;
+        int t1 = (int)t;
+        robot.vacuumMotor.setPower(-Math.abs(power));
+        sleep(t1);
+        robot.vacuumMotor.setPower(0);
+    }
+
 
     private void runUntilCenter(int pos){
         int gMX = pos;
