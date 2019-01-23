@@ -86,11 +86,17 @@ public class DepotExperimental extends LinearOpMode {
         sleep(250);
 
         //Moves out of lander and orients in front of center block
-        moveStraight(Direction.BACKWARDS,0.4,0.7);
+        moveStraight(Direction.BACKWARDS,0.4,0.30);
+        sleep(300);
+        robot.liftMotor.setPower(-0.6);
+        sleep(250);
+        moveStraight(Direction.BACKWARDS,0.4,0.20);
         strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.5);
+        moveStraight(Direction.FORWARDS,0.3,0.3);
         turn(Direction.LEFT,0.5,0.92);
-        sleep(500);
+        sleep(100);
+        strafe(Direction.LEFT, 0.3,0.6);
+        sleep(750);
 
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
@@ -101,13 +107,13 @@ public class DepotExperimental extends LinearOpMode {
 
         //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
-            moveStraight(Direction.FORWARDS,0.5,1);
+            moveStraight(Direction.FORWARDS,0.5,1.3);
             comp = true;
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
             strafe(Direction.LEFT,0.5,1.2);
-            sleep(200);
+            sleep(500);
             center();
         }
 
@@ -139,32 +145,33 @@ public class DepotExperimental extends LinearOpMode {
 
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
-            turn(Direction.LEFT,0.5,0.46);
-            strafe(Direction.RIGHT,0.3,1);
+            turn(Direction.LEFT,0.5,0.55);
+            strafe(Direction.RIGHT,0.3,1.3);
         }else if(pos == 1){
-            turn(Direction.RIGHT,0.5,0.46);
+            turn(Direction.RIGHT,0.5,0.5);
             moveStraight(Direction.FORWARDS,0.3,0.3);
             strafe(Direction.RIGHT,0.3,1);
             turn(Direction.LEFT,0.5,0.92);
             strafe(Direction.RIGHT,0.3,1);
         }else if(pos == 2){
-            turn(Direction.LEFT,0.5,0.46);
+            turn(Direction.LEFT,0.5,0.5);
             moveStraight(Direction.FORWARDS,0.3,0.5);
         }
 
         //Should set down the team marker and get out
-        lower(0.3,1);
+        lower(0.6,0.5);
         moveStraight(Direction.BACKWARDS,0.5,1);
-        raise(0.3,1);
+        raise(0.6,1);
 
         //Drive towards crater
         moveStraight(Direction.BACKWARDS,0.5,2);
         turn(Direction.LEFT,0.5,1.8);
-        moveStraight(Direction.FORWARDS,0.5,2);
+        moveStraight(Direction.FORWARDS,0.5,1.4);
 
         //Sets down vacuumMotor to get above crater
-        lower(0.3,1);
 
+
+        lower(0.3,1);
         //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
         //TODO: Add in code to drop off marker in depot
 
