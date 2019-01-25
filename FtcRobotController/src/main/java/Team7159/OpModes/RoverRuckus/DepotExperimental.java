@@ -96,13 +96,14 @@ public class DepotExperimental extends LinearOpMode {
         robot.liftMotor.setPower(0);
         sleep(250);
         moveStraight(Direction.FORWARDS,0.3,0.6);
-        sleep(1000);
+        sleep(200);
         strafe(Direction.LEFT,0.6,1);
         //moveStraight(Direction.FORWARDS,0.3,0.4);
         turn(Direction.LEFT,0.5,1.12);
        // sleep(100);
         //strafe(Direction.LEFT, 0.3,1);
-     sleep(750);
+        //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
+     sleep(200);
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
         takePic();
@@ -119,7 +120,7 @@ public class DepotExperimental extends LinearOpMode {
             //Check to strafe left
             strafe(Direction.LEFT,0.5,1.3);
             moveStraight(Direction.FORWARDS,0.3,0.3);
-            sleep(750);
+            sleep(200);
             center(2);
         }
         takePic();
@@ -134,7 +135,7 @@ public class DepotExperimental extends LinearOpMode {
             strafe(Direction.RIGHT,0.5,2.2);
             moveStraight(Direction.BACKWARDS,0.3,.2);
 
-            sleep(1000);
+            sleep(200);
             center(3);
         }
 
@@ -369,9 +370,9 @@ public class DepotExperimental extends LinearOpMode {
                 telemetry.addData("found","gold mineral found");
                 telemetry.update();
                 //uncomment these when you want the gold detection to work, delete the moveStraight
-                //runUntilCenter((int)rec.getTop());
-               // moveStraight(Direction.FORWARDS,0.5,0.5);
-                pos++;
+                runUntilCenter((int)rec.getTop());
+                moveStraight(Direction.FORWARDS,0.5,0.5);
+//                pos++;
             }else{
                 sPos[cPos-1] = true;
                 telemetry.addData("found","silver mineral found" + String.valueOf(cPos));
