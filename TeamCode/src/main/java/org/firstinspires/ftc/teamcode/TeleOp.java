@@ -8,24 +8,19 @@ import Team7159.ComplexRobots.VacuumBotV2;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp")
 public class TeleOp extends LinearOpMode {
 
-    //Defines the direction of vertical movement, and to go while a button is pressed
-    //Stands for Vertical Direction
-    int vDir = 0;
-
-    //Defines the direction of horizontal movement, and to go while a button is pressed
-    //Stands for Horizontal Direction
-    int hDir = 0;
-
-    //Defines the direction of the chain rotational movement, and to go while a button is pressed
-    //Stands for chain Direction
-    int cDir = 0;
-
     //The robot
     private VacuumBotV2 robot = new VacuumBotV2();
 
 
     @Override
     public void runOpMode(){
+        //Linear Actuator direction
+        int vDir;
+        //Vacuum direction
+        int hDir;
+        //Chain direction
+
+        int cDir;
         robot.init(hardwareMap);
         robot.liftServo.setPosition(0.3);
         waitForStart();
@@ -78,11 +73,15 @@ public class TeleOp extends LinearOpMode {
                 robot.rServo.setPower(0);
                 robot.lServo.setPower(0);
             }else if(hDir == 1){
-                robot.rServo.setPower(-0.6);
-                robot.lServo.setPower(0.6);
+                telemetry.addData("hdir","equals 1");
+                telemetry.update();
+                robot.rServo.setPower(-0.8);
+                robot.lServo.setPower(0.8);
             }else if(hDir == 2){
-                robot.rServo.setPower(0.6);
-                robot.lServo.setPower(-0.6);
+                telemetry.addData("hdir","equals 2");
+                telemetry.update();
+                robot.rServo.setPower(0.8);
+                robot.lServo.setPower(-0.8);
             }
 
             //Makes the chain rotate, and by extension the rotater
@@ -94,8 +93,6 @@ public class TeleOp extends LinearOpMode {
                 robot.chainMotor.setPower(-0.6);
             }
 
-
-            //TODO: Find the values to set armServo to dump back
             if(gamepad1.right_bumper){
                 robot.liftServo.setPosition(0.9);
             }
@@ -106,12 +103,10 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.left_bumper){
                 robot.vacuumMotor.setPower(1);
-                lower();
             }
 
             if(gamepad1.left_trigger>0.1){
                 robot.vacuumMotor.setPower(-1);
-                raise();
             }
 
             robot.vacuumMotor.setPower(0);
@@ -137,17 +132,6 @@ public class TeleOp extends LinearOpMode {
             robot.LFMotor.setPower(lf);
             robot.LBMotor.setPower(lb);
         }
-
-    }
-
-
-    //TODO: Find the positions for lowering the motor for the Vacuum using encoders or time
-    public void lower(){
-
-    }
-
-    //TODO: Find the positions for raising the motor for the Vacuum using encoders or time
-    public void raise(){
 
     }
 
