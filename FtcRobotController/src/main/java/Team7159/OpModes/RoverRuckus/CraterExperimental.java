@@ -80,17 +80,29 @@ public class CraterExperimental extends LinearOpMode {
         }
 
         //Goes down from lander
+
         robot.liftMotor.setPower(0.6);
         sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
 
         //Moves out of lander and orients in front of center block
-        moveStraight(Direction.BACKWARDS,0.4,0.7);
+        moveStraight(Direction.BACKWARDS,0.4,0.30);
+        sleep(300);
+        robot.liftMotor.setPower(-0.6);
+        sleep(250);
+        moveStraight(Direction.BACKWARDS,0.4,0.20);
         strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.5);
+        moveStraight(Direction.FORWARDS,0.3,0.3);
         turn(Direction.LEFT,0.5,0.92);
-        sleep(500);
+        sleep(100);
+        strafe(Direction.LEFT, 0.3,0.6);
+        sleep(750);
+
+
+
+
+
 
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
@@ -102,6 +114,7 @@ public class CraterExperimental extends LinearOpMode {
         //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
             moveStraight(Direction.FORWARDS,0.5,1);
+
             comp = true;
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
