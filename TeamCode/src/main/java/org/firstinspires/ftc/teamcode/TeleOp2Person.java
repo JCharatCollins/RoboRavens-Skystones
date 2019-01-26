@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp")
-public class TeleOp extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOpPerson2")
+public class TeleOp2Person extends LinearOpMode {
 
     //Defines the direction of vertical movement, and to go while a button is pressed
     //Stands for Vertical Direction
@@ -31,7 +31,7 @@ public class TeleOp extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
 
-            //Sets the direction of the liftMotor for moving up or down
+            //Sets the di  rection of the liftMotor for moving up or down
 
             if(gamepad1.y){
                 vDir = 1;

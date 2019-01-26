@@ -98,11 +98,13 @@ public class CraterExperimental extends LinearOpMode {
         sleep(200);
         strafe(Direction.LEFT,0.6,1);
         //moveStraight(Direction.FORWARDS,0.3,0.4);
-        turn(Direction.LEFT,0.5,1.12);
+        turn(Direction.LEFT,0.5,1.1);
         // sleep(100);
-        //strafe(Direction.LEFT, 0.3,1);
+       // strafe(Direction.LEFT, 0.3,1);
+        strafe(Direction.LEFT, 0.3,0.4);
+
         //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
-        sleep(200);
+        sleep(750);
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
         takePic();
@@ -119,10 +121,10 @@ public class CraterExperimental extends LinearOpMode {
             //Check to strafe left
             strafe(Direction.LEFT,0.5,1.3);
             moveStraight(Direction.FORWARDS,0.3,0.3);
-            sleep(200);
+            sleep(750);
+            takePic();
             center(2);
         }
-        takePic();
         //Takes picture
 
         //If it's 1 this position or last was gold, so if its not completed its this position
@@ -134,12 +136,14 @@ public class CraterExperimental extends LinearOpMode {
             strafe(Direction.RIGHT,0.5,2.2);
             moveStraight(Direction.BACKWARDS,0.3,.2);
 
-            sleep(200);
+            sleep(750);
+            takePic();
             center(3);
         }
 
         //Pulls out to a safe distance
-        moveStraight(Direction.BACKWARDS,0.5,1.5);
+        /*
+        moveStraight(Direction.BACKWARDS,0.5,0.3);
 
         if(pos == 0) {
             strafe(Direction.LEFT,0.6,1.5);
@@ -149,7 +153,7 @@ public class CraterExperimental extends LinearOpMode {
             strafe(Direction.LEFT,0.6,0.7);
             turn(Direction.RIGHT,0.5,0.2);
         }else if(pos == 2){
-            strafe(Direction.LEFT,0.3,2.1);
+            strafe(Direction.LEFT,0.6,3);
             turn(Direction.RIGHT,0.5,0.2);
         }
         else{
@@ -171,7 +175,7 @@ public class CraterExperimental extends LinearOpMode {
 
                 if(fLocation == 1){
                     //gold is in first position, strafe back
-                    strafe(Direction.LEFT,0.5,1.3);
+                    strafe(Direction.LEFT,0.5,1.5);
                     moveStraight(Direction.FORWARDS,0.5,0.5);
                     moveStraight(Direction.BACKWARDS,0.5,1.5);
                     strafe(Direction.LEFT,0.6,1.5);
@@ -187,14 +191,14 @@ public class CraterExperimental extends LinearOpMode {
 
                     moveStraight(Direction.FORWARDS,0.5,0.5);
                     moveStraight(Direction.BACKWARDS,0.5,1.5);
-                    strafe(Direction.LEFT,0.3,2.1);
+                    strafe(Direction.LEFT,0.3,3);
                     turn(Direction.RIGHT,0.5,0.2);;
                 }
             }
             else{
                 moveStraight(Direction.FORWARDS,0.5,0.5);
                 moveStraight(Direction.BACKWARDS,0.5,1.5);
-                strafe(Direction.LEFT,0.3,2.1);
+                strafe(Direction.LEFT,0.3,3);
                 turn(Direction.RIGHT,0.5,0.2);;
             }
 
@@ -203,7 +207,7 @@ public class CraterExperimental extends LinearOpMode {
         //Strafe to wall and turn facing crater
 
         //Faces depot and moves towards it
-        turn(Direction.RIGHT,0.5,1.8);
+        turn(Direction.RIGHT,0.5,2.5);
         moveStraight(Direction.FORWARDS,0.5,2.5);
 
         //Sets down the marker and pulls out
@@ -215,7 +219,7 @@ public class CraterExperimental extends LinearOpMode {
         moveStraight(Direction.BACKWARDS,0.5,2);
         turn(Direction.LEFT,0.5,1.8);
         moveStraight(Direction.FORWARDS,0.5,0.5);
-
+*/
         //Sets down vacuumMotor to get above crater
         lower(0.3,1);
 
@@ -356,6 +360,7 @@ public class CraterExperimental extends LinearOpMode {
 
     public void center(int cPos){
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
@@ -363,7 +368,7 @@ public class CraterExperimental extends LinearOpMode {
                 telemetry.update();
                 //uncomment these when you want the gold detection to work, delete the moveStraight
                 runUntilCenter((int)rec.getTop());
-                moveStraight(Direction.FORWARDS,0.5,0.5);
+                moveStraight(Direction.FORWARDS,0.5,1);
 //                pos++;
             }else{
                 sPos[cPos-1] = true;
@@ -372,13 +377,14 @@ public class CraterExperimental extends LinearOpMode {
                 pos++;
             }
         }else{
-            telemetry.addData("Size",updatedRecognitions.size());
-            pos++;
-            telemetry.addData("center","nothing found");
-            telemetry.update();
+                telemetry.addData("Size",updatedRecognitions.size());
+                pos++;
+                telemetry.addData("center","nothing found");
+                telemetry.update();
 //            moveStraight(Direction.FORWARDS,0.5,1);
         }
     }
+
     private Bitmap getBitmap() throws InterruptedException{
         Frame frame;
         Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);

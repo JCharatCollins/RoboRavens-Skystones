@@ -95,15 +95,15 @@ public class DepotExperimental extends LinearOpMode {
         sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
-        moveStraight(Direction.FORWARDS,0.3,0.6);
+        moveStraight(Direction.FORWARDS,0.3,0.5);
         sleep(200);
         strafe(Direction.LEFT,0.6,1);
         //moveStraight(Direction.FORWARDS,0.3,0.4);
-        turn(Direction.LEFT,0.5,1.12);
+        turn(Direction.LEFT,0.5,1.1);
        // sleep(100);
-        //strafe(Direction.LEFT, 0.3,1);
+        strafe(Direction.LEFT, 0.3,0.5);
         //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
-     sleep(200);
+     sleep(750);
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
         takePic();
@@ -118,9 +118,9 @@ public class DepotExperimental extends LinearOpMode {
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            strafe(Direction.LEFT,0.5,1.3);
+            strafe(Direction.LEFT,0.5,1);
             moveStraight(Direction.FORWARDS,0.3,0.3);
-            sleep(200);
+            sleep(750);
             center(2);
         }
         takePic();
@@ -133,9 +133,9 @@ public class DepotExperimental extends LinearOpMode {
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
             strafe(Direction.RIGHT,0.5,2.2);
-            moveStraight(Direction.BACKWARDS,0.3,.2);
+            moveStraight(Direction.BACKWARDS,0.3,.3);
 
-            sleep(200);
+            sleep(750);
             center(3);
         }
 
@@ -152,7 +152,7 @@ public class DepotExperimental extends LinearOpMode {
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
             turn(Direction.LEFT,0.5,0.35);
-            strafe(Direction.RIGHT,0.6,.7);
+            strafe(Direction.RIGHT,0.6,.9);
         }else if(pos == 1){
             turn(Direction.LEFT,0.5,0.33);
             strafe(Direction.RIGHT,0.6,2.3);
@@ -215,7 +215,7 @@ public class DepotExperimental extends LinearOpMode {
 
         //Drive towards crater
         moveStraight(Direction.BACKWARDS,0.5,1.5);
-        turn(Direction.LEFT,0.5,2.2);
+        turn(Direction.LEFT,0.5,1.9);
         moveStraight(Direction.FORWARDS,0.5,.7);
 
         //Sets down vacuumMotor to get above crater
