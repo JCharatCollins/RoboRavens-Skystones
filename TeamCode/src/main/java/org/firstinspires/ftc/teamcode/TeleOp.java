@@ -101,7 +101,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad1.right_trigger>0.1){
-                robot.liftServo.setPosition(0.27);
+                robot.liftServo.setPosition(0.2225);
             }
 
             if(gamepad1.left_bumper){
