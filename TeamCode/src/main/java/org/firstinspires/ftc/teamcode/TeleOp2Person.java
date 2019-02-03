@@ -72,7 +72,7 @@ public class TeleOp2Person extends LinearOpMode {
             }else if(vDir == 2){
                 robot.liftMotor.setPower(-1);
             }
-
+/*
             //Makes the crServo go in and out
             if(hDir == 0){
                 robot.rServo.setPower(0);
@@ -84,7 +84,7 @@ public class TeleOp2Person extends LinearOpMode {
                 robot.rServo.setPower(-0.6);
                 robot.lServo.setPower(0.6);
             }
-
+*/
             //Makes the chain rotate, and by extension the rotater
             if(cDir == 0){
                 robot.chainMotor.setPower(0);

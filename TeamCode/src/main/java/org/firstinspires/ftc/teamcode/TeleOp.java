@@ -75,14 +75,11 @@ public class TeleOp extends LinearOpMode {
 
             //Makes the crServo go in and out
             if(hDir == 0){
-                robot.rServo.setPower(0);
-                robot.lServo.setPower(0);
+                robot.intakeMotor.setPower(0);
             }else if(hDir == 1){
-                robot.rServo.setPower(0.6);
-                robot.lServo.setPower(-0.6);
+                robot.intakeMotor.setPower(0.8);
             }else if(hDir == 2){
-                robot.rServo.setPower(-0.6);
-                robot.lServo.setPower(0.6);
+                robot.intakeMotor.setPower(-0.8);
             }
 
             //Makes the chain rotate, and by extension the rotater
