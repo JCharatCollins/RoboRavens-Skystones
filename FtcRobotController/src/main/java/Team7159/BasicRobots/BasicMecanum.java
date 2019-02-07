@@ -16,7 +16,7 @@ public class BasicMecanum {
 
     MotorGroup Left;
     MotorGroup Right;
-
+    double strafeConstant= 7/6;
     public DcMotor LFMotor;
     public DcMotor RFMotor;
     public DcMotor LBMotor;
@@ -36,7 +36,6 @@ public class BasicMecanum {
 
         LFMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         LBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        RBMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         LFMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         RFMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -47,9 +46,10 @@ public class BasicMecanum {
         RFMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RBMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-//        Left.AddMotors(LFMotor,LBMotor);
-//        Right.AddMotors(RFMotor,RBMotor);
+        Left = new MotorGroup();
+        Right = new MotorGroup();
+        Left.AddMotors(LFMotor,LBMotor);
+        Right.AddMotors(RFMotor,RBMotor);
     }
 
 
@@ -89,24 +89,55 @@ public class BasicMecanum {
         Left.resetEncoders();
         Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        int pos = -Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO);
         switch (direction) {
-            case FORWARDS:
-                int pos = -Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO);
+            case BACKWARDS:
                 Right.setTargetPosition(pos);
                 Left.setTargetPosition(pos);
                 break;
-            case BACKWARDS:
-                pos = Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO);
+            case FORWARDS:
                 Right.setTargetPosition(pos);
                 Left.setTargetPosition(pos);
                 break;
         }
-        moveStraight(0.5);
+       // moveStraight(0.5);
         while (Right.isBusy() && Left.isBusy()) {
         }
         stop();
         Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void strafe(Direction direction, int distance)
+    {
+
+        Right.resetEncoders();
+        Left.resetEncoders();
+        Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        double pos = (double)Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO)*7/6;
+
+        switch (direction) {
+            case LEFT:
+
+                LFMotor.setTargetPosition((int)-pos);
+                LBMotor.setTargetPosition((int)pos);
+                RFMotor.setTargetPosition((int)pos);
+                RBMotor.setTargetPosition((int)-pos);
+                break;
+            case RIGHT:
+                LFMotor.setTargetPosition((int)pos);
+                LBMotor.setTargetPosition((int)-pos);
+                RFMotor.setTargetPosition((int)-pos);
+                RBMotor.setTargetPosition((int)pos);
+                break;
+        }
+        //moveStraight(0.5);
+        while (Right.isBusy() && Left.isBusy()) {
+        }
+        stop();
+        Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     public void strafe(Direction direction, double power, double time) throws InterruptedException{

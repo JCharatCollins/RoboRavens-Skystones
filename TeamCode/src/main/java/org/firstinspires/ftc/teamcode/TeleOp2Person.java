@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp")
-public class TeleOp extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOpPerson2")
+public class TeleOp2Person extends LinearOpMode {
 
     //Defines the direction of vertical movement, and to go while a button is pressed
     //Stands for Vertical Direction
@@ -19,26 +19,19 @@ public class TeleOp extends LinearOpMode {
     //Defines the direction of the chain rotational movement, and to go while a button is pressed
     //Stands for chain Direction
     int cDir = 0;
-    boolean lower = true;
+
     //The robot
     private VacuumBotV2 robot = new VacuumBotV2();
 
 
     @Override
     public void runOpMode(){
-        //Linear Actuator direction
-        int vDir;
-        //Vacuum direction
-        int hDir;
-        //Chain direction
-
-        int cDir;
         robot.init(hardwareMap);
         robot.liftServo.setPosition(0.3);
         waitForStart();
         while(opModeIsActive()){
 
-            //Sets the direction of the liftMotor for moving up or down
+            //Sets the di  rection of the liftMotor for moving up or down
 
             if(gamepad1.y){
                 vDir = 1;
@@ -79,16 +72,19 @@ public class TeleOp extends LinearOpMode {
             }else if(vDir == 2){
                 robot.liftMotor.setPower(-1);
             }
-
-            //Makes the rack and pinion motor go in and out
+/*
+            //Makes the crServo go in and out
             if(hDir == 0){
-                robot.intakeMotor.setPower(0);
+                robot.rServo.setPower(0);
+                robot.lServo.setPower(0);
             }else if(hDir == 1){
-                robot.intakeMotor.setPower(0.8);
+                robot.rServo.setPower(0.6);
+                robot.lServo.setPower(-0.6);
             }else if(hDir == 2){
-                robot.intakeMotor.setPower(-0.8);
+                robot.rServo.setPower(-0.6);
+                robot.lServo.setPower(0.6);
             }
-
+*/
             //Makes the chain rotate, and by extension the rotater
             if(cDir == 0){
                 robot.chainMotor.setPower(0);
@@ -98,6 +94,8 @@ public class TeleOp extends LinearOpMode {
                 robot.chainMotor.setPower(-0.6);
             }
 
+
+            //TODO: Find the values to set armServo to dump back
             if(gamepad1.right_bumper){
                 robot.liftServo.setPosition(0.9);
             }
@@ -108,10 +106,12 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.left_bumper){
                 robot.vacuumMotor.setPower(1);
+                lower();
             }
 
             if(gamepad1.left_trigger>0.1){
                 robot.vacuumMotor.setPower(-1);
+                raise();
             }
 
             robot.vacuumMotor.setPower(0);
@@ -137,6 +137,17 @@ public class TeleOp extends LinearOpMode {
             robot.LFMotor.setPower(lf);
             robot.LBMotor.setPower(lb);
         }
+
+    }
+
+
+    //TODO: Find the positions for lowering the motor for the Vacuum using encoders or time
+    public void lower(){
+
+    }
+
+    //TODO: Find the positions for raising the motor for the Vacuum using encoders or time
+    public void raise(){
 
     }
 
