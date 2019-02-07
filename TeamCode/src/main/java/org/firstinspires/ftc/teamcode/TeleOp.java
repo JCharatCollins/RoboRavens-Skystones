@@ -73,6 +73,7 @@ public class TeleOp extends LinearOpMode {
                 robot.rServo.setPower(0);
                 robot.lServo.setPower(0);
             }else if(hDir == 1){
+<<<<<<< HEAD
                 telemetry.addData("hdir","equals 1");
                 telemetry.update();
                 robot.rServo.setPower(-0.8);
@@ -82,6 +83,13 @@ public class TeleOp extends LinearOpMode {
                 telemetry.update();
                 robot.rServo.setPower(0.8);
                 robot.lServo.setPower(-0.8);
+=======
+                robot.rServo.setPower(0.6);
+                robot.lServo.setPower(-0.6);
+            }else if(hDir == 2){
+                robot.rServo.setPower(-0.6);
+                robot.lServo.setPower(0.6);
+>>>>>>> 43d56c5c4d23aaa3eac2a37dee44ebb82c83ce72
             }
 
             //Makes the chain rotate, and by extension the rotater

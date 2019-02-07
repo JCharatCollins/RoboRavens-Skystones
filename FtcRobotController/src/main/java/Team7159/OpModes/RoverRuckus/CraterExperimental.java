@@ -43,6 +43,7 @@ public class CraterExperimental extends LinearOpMode {
             "fs726qLAIagk9Nd2CzIg/x";
 
     private TFObjectDetector tfod;
+    boolean[] sPos = new boolean[3];
 
     private VacuumBotV2 robot = new VacuumBotV2();
 
@@ -80,78 +81,140 @@ public class CraterExperimental extends LinearOpMode {
         }
 
         //Goes down from lander
+
         robot.liftMotor.setPower(0.6);
         sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
 
         //Moves out of lander and orients in front of center block
-        moveStraight(Direction.BACKWARDS,0.4,0.7);
-        strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.5);
-        turn(Direction.LEFT,0.5,0.92);
-        sleep(500);
-
+        moveStraight(Direction.BACKWARDS,0.4,0.30);
+        sleep(300);
+        robot.liftMotor.setPower(-0.6);
+        sleep(2000);
+        robot.liftMotor.setPower(0);
+        sleep(250);
+        moveStraight(Direction.FORWARDS,0.3,0.6);
+        sleep(200);
+        strafe(Direction.LEFT,0.6,1);
+        //moveStraight(Direction.FORWARDS,0.3,0.4);
+        turn(Direction.LEFT,0.5,1.12);
+        // sleep(100);
+        //strafe(Direction.LEFT, 0.3,1);
+        //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
+        sleep(200);
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
-        center();
-
-        //Takes picture
         takePic();
+
+        center(1);
+        //Takes picture
 
         //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
-            moveStraight(Direction.FORWARDS,0.5,1);
+            moveStraight(Direction.FORWARDS,0.5,.8);
             comp = true;
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            strafe(Direction.LEFT,0.5,1.2);
+            strafe(Direction.LEFT,0.5,1.3);
+            moveStraight(Direction.FORWARDS,0.3,0.3);
             sleep(200);
-            center();
+            center(2);
         }
-
-        //Takes picture
         takePic();
+        //Takes picture
 
         //If it's 1 this position or last was gold, so if its not completed its this position
         if(pos == 1 && !comp){
-            moveStraight(Direction.FORWARDS,0.5,1);
+            moveStraight(Direction.FORWARDS,0.5,.8);
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            strafe(Direction.RIGHT,0.5,2.3);
-            sleep(1000);
-            center();
-        }
+            strafe(Direction.RIGHT,0.5,2.2);
+            moveStraight(Direction.BACKWARDS,0.3,.2);
 
-        takePic();
-
-        if(!comp){
-            //If we're not complete yet it must be right position
-            moveStraight(Direction.FORWARDS,0.5,1);
+            sleep(200);
+            center(3);
         }
 
         //Pulls out to a safe distance
         moveStraight(Direction.BACKWARDS,0.5,1.5);
 
+        if(pos == 0) {
+            strafe(Direction.LEFT,0.6,1.5);
+            turn(Direction.RIGHT,0.5,0.2);
+
+        }else if(pos == 1){
+            strafe(Direction.LEFT,0.6,0.7);
+            turn(Direction.RIGHT,0.5,0.2);
+        }else if(pos == 2){
+            strafe(Direction.LEFT,0.3,2.1);
+            turn(Direction.RIGHT,0.5,0.2);
+        }
+        else{
+            telemetry.addData("test","pos ==3");
+            int sCount = 0;
+            int fLocation = 0;
+            for (int i = 0; i <3;i++)
+            {
+                if(sPos[i] == true){
+                    sCount++;
+                }else{
+                    fLocation = i+1;
+                }
+            }
+            telemetry.addData("test", "stop flaming me aidan "+String.valueOf(sCount) + " " + String.valueOf(fLocation));
+            telemetry.update();
+            if(sCount == 2){
+                moveStraight(Direction.FORWARDS,0.5,1);
+
+                if(fLocation == 1){
+                    //gold is in first position, strafe back
+                    strafe(Direction.LEFT,0.5,1.3);
+                    moveStraight(Direction.FORWARDS,0.5,0.5);
+                    moveStraight(Direction.BACKWARDS,0.5,1.5);
+                    strafe(Direction.LEFT,0.6,1.5);
+                    turn(Direction.RIGHT,0.5,0.2);
+                    comp = true;
+                }else if(fLocation == 2){
+                    strafe(Direction.LEFT,0.5,2.2);
+                    moveStraight(Direction.FORWARDS,0.5,0.5);
+                    moveStraight(Direction.BACKWARDS,0.5,1.5);
+                    strafe(Direction.LEFT,0.6,0.7);
+                    turn(Direction.RIGHT,0.5,0.2);
+                }else if(fLocation == 3){
+
+                    moveStraight(Direction.FORWARDS,0.5,0.5);
+                    moveStraight(Direction.BACKWARDS,0.5,1.5);
+                    strafe(Direction.LEFT,0.3,2.1);
+                    turn(Direction.RIGHT,0.5,0.2);;
+                }
+            }
+            else{
+                moveStraight(Direction.FORWARDS,0.5,0.5);
+                moveStraight(Direction.BACKWARDS,0.5,1.5);
+                strafe(Direction.LEFT,0.3,2.1);
+                turn(Direction.RIGHT,0.5,0.2);;
+            }
+
+        }
+
         //Strafe to wall and turn facing crater
-        strafe(Direction.LEFT,0.3,2);
-        turn(Direction.RIGHT,0.5,0.46);
 
         //Faces depot and moves towards it
         turn(Direction.RIGHT,0.5,1.8);
-        moveStraight(Direction.FORWARDS,0.5,1);
+        moveStraight(Direction.FORWARDS,0.5,2.5);
 
         //Sets down the marker and pulls out
-        lower(0.3,1);
+        lower(0.6,0.5);
         moveStraight(Direction.BACKWARDS,0.5,1);
-        raise(0.3,1);
+        raise(0.6,0.5);
 
         //Drive towards crater
         moveStraight(Direction.BACKWARDS,0.5,2);
         turn(Direction.LEFT,0.5,1.8);
-        moveStraight(Direction.FORWARDS,0.5,2);
+        moveStraight(Direction.FORWARDS,0.5,0.5);
 
         //Sets down vacuumMotor to get above crater
         lower(0.3,1);
@@ -291,17 +354,20 @@ public class CraterExperimental extends LinearOpMode {
         }
     }
 
-    public void center(){
+    public void center(int cPos){
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
                 telemetry.addData("found","gold mineral found");
                 telemetry.update();
+                //uncomment these when you want the gold detection to work, delete the moveStraight
                 runUntilCenter((int)rec.getTop());
                 moveStraight(Direction.FORWARDS,0.5,0.5);
+//                pos++;
             }else{
-                telemetry.addData("found","silver mineral found");
+                sPos[cPos-1] = true;
+                telemetry.addData("found","silver mineral found" + String.valueOf(cPos));
                 telemetry.update();
                 pos++;
             }
@@ -313,7 +379,6 @@ public class CraterExperimental extends LinearOpMode {
 //            moveStraight(Direction.FORWARDS,0.5,1);
         }
     }
-
     private Bitmap getBitmap() throws InterruptedException{
         Frame frame;
         Bitmap BM0 = Bitmap.createBitmap(new DisplayMetrics(), 100, 100, Bitmap.Config.RGB_565);
