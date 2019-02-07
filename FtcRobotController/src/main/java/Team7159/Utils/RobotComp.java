@@ -18,7 +18,7 @@ public class RobotComp {
         if(version.equals(Version.ONE)){
             return (int)(distance*(1120/(Math.PI* RobotMath.toMeters(4))));
         }else if(version.equals(Version.TWO)){
-            return (int)(distance * (1120/(Math.PI* RobotMath.toMeters(3.875))));
+            return (int)(distance * (1120/(Math.PI* RobotMath.toMeters(4))));
         }else{
             return 0;
         }

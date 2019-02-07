@@ -19,7 +19,7 @@ public class TeleOp extends LinearOpMode {
     //Defines the direction of the chain rotational movement, and to go while a button is pressed
     //Stands for chain Direction
     int cDir = 0;
-
+    boolean lower = true;
     //The robot
     private VacuumBotV2 robot = new VacuumBotV2();
 
@@ -73,7 +73,7 @@ public class TeleOp extends LinearOpMode {
                 robot.liftMotor.setPower(-1);
             }
 
-            //Makes the crServo go in and out
+            //Makes the rack and pinion motor go in and out
             if(hDir == 0){
                 robot.intakeMotor.setPower(0);
             }else if(hDir == 1){
@@ -98,12 +98,12 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad1.right_trigger>0.1){
-                robot.liftServo.setPosition(0.2225);
+                robot.liftServo.setPosition(0.24);
             }
 
             if(gamepad1.left_bumper){
                 robot.vacuumMotor.setPower(1);
-                lower();
+               // lower();
             }
 
             if(gamepad1.left_trigger>0.1){
