@@ -141,7 +141,7 @@ public class DepotExperimental extends LinearOpMode {
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            strafeRight(24);
+            moveRight(24);
             //strafe(Direction.RIGHT,0.5,2.2);
             //robot.driveDir();
             //moveStraight(Direction.BACKWARDS,0.3,.3);
@@ -193,7 +193,7 @@ public class DepotExperimental extends LinearOpMode {
             int fLocation = 0;
             for (int i = 0; i <3;i++)
             {
-                if(sPos[i] == true){
+                if(sPos[i]){
                     sCount++;
                 }else{
                     fLocation = i+1;
@@ -426,14 +426,33 @@ public class DepotExperimental extends LinearOpMode {
                 telemetry.update();
                 pos++;
             }
-        }else{
+        }else if(updatedRecognitions.size()>1) {
+            telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+            telemetry.addData("checking for gold","balls");
+            telemetry.update();
+            //Additional redundancy, treating bigger size as gold
             boolean goldF = false;
-            for(Recognition re: updatedRecognitions){
-                if(re.getLabel().equals(LABEL_GOLD_MINERAL)){
-                    goldF = true;
+            for(Recognition rec: updatedRecognitions){
+                if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
+                    telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+                    telemetry.addData(" gold"," found");
+                    telemetry.update();
+                    if(rec.getConfidence()>=0.9) goldF = true;
                 }
             }
+            if(goldF) {
+                robot.driveDir(Direction.FORWARDS, 20);
+            }else {
+                telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+                telemetry.addData(" gold not found"," assuming is silver");
+                telemetry.update();
+                sPos[cPos-1] = true;
+
+                pos++;
+            }
+        }else {
             telemetry.addData("Size",updatedRecognitions.size());
+
             pos++;
             telemetry.addData("center","nothing found");
             telemetry.update();
@@ -471,7 +490,8 @@ public class DepotExperimental extends LinearOpMode {
             e.printStackTrace();
         }
     }
-    private void strafeRight(int distance)
+
+    private void moveRight(int distance)
     {
         robot.turn(Direction.RIGHT, 90);
         robot.driveDir(Direction.FORWARDS, distance);

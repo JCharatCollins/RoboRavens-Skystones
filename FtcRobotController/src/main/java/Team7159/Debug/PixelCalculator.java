@@ -66,10 +66,12 @@ public class PixelCalculator extends LinearOpMode {
                         for (Recognition recognition : updatedRecognitions) {
                             if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                 goldMineralX = (int) recognition.getTop();
-
+                                telemetry.addData("recog percent",recognition.getConfidence());
                             } else if (silverMineral1X == -1) {
+                                telemetry.addData("recog percent",recognition.getConfidence());
                                 silverMineral1X = (int) recognition.getLeft();
                             } else {
+                                telemetry.addData("recog percent",recognition.getConfidence());
                                 silverMineral2X = (int) recognition.getLeft();
                             }
                         }
