@@ -27,16 +27,16 @@ public class TeleOp2Person extends LinearOpMode {
     @Override
     public void runOpMode(){
         robot.init(hardwareMap);
-        robot.liftServo.setPosition(0.3);
+        robot.liftServo.setPosition(0.225);
         waitForStart();
         while(opModeIsActive()){
 
             //Sets the di  rection of the liftMotor for moving up or down
 
-            if(gamepad1.y){
-                vDir = 1;
-            } else if(gamepad1.a){
+            if(gamepad1.right_trigger>0.1){
                 vDir = 2;
+            } else if(gamepad1.right_bumper){
+                vDir = 1;
             }else{
                 vDir = 0;
             }
@@ -44,9 +44,9 @@ public class TeleOp2Person extends LinearOpMode {
             //Sets the direction of the CR servos for moving either in or out
             //Up should be moving out, down should be moving in
 
-            if(gamepad1.dpad_up){
+            if(gamepad2.dpad_up){
                 hDir = 1;
-            }else if(gamepad1.dpad_down){
+            }else if(gamepad2.dpad_down){
                 hDir = 2;
             }else{
                 hDir = 0;
@@ -55,9 +55,9 @@ public class TeleOp2Person extends LinearOpMode {
             //Sets the direction of the chain for moving the cleaners in and out
             //X should be picking up, B should be shooting out
 
-            if(gamepad1.x){
+            if(gamepad2.x){
                 cDir = 1;
-            }else if(gamepad1.b){
+            }else if(gamepad2.b){
                 cDir = 2;
             }else{
                 cDir = 0;

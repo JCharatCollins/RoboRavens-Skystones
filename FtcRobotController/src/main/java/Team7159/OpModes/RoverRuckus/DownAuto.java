@@ -17,19 +17,9 @@ public class DownAuto extends LinearOpMode {
 
         waitForStart();
 
-        robot.liftMotor.setPower(0.6);
-        sleep(2000);
-        robot.liftMotor.setPower(0);
-
-
-        //Parks in front of the center mineral
-        moveStraight(Direction.BACKWARDS,0.4,0.7);
-        strafe(Direction.LEFT,0.3,2);
-        moveStraight(Direction.FORWARDS,0.3,0.5);
-        turn(Direction.LEFT,0.5,0.92);
-        sleep(500);
-
-
+       robot.strafe(Direction.LEFT, 25);
+       sleep(500);
+       robot.strafe(Direction.RIGHT, 25);
 
     }
 

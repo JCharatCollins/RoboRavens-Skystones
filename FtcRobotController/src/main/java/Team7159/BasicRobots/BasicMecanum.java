@@ -89,18 +89,19 @@ public class BasicMecanum {
         Left.resetEncoders();
         Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        int pos = -Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO);
+        int pos = Comp.computePositionD(RobotMath.toMeters(distance), Version.TWO);
         switch (direction) {
             case BACKWARDS:
-                Right.setTargetPosition(pos);
-                Left.setTargetPosition(pos);
+             //   pos = -pos;
+                Right.setTargetPosition(-pos);
+                Left.setTargetPosition(-pos);
                 break;
             case FORWARDS:
                 Right.setTargetPosition(pos);
                 Left.setTargetPosition(pos);
                 break;
         }
-       // moveStraight(0.5);
+       moveStraight(0.5);
         while (Right.isBusy() && Left.isBusy()) {
         }
         stop();
@@ -131,8 +132,10 @@ public class BasicMecanum {
                 RBMotor.setTargetPosition((int)pos);
                 break;
         }
-        //moveStraight(0.5);
+        moveStraight(0.5);
+
         while (Right.isBusy() && Left.isBusy()) {
+
         }
         stop();
         Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

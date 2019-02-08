@@ -88,7 +88,8 @@ public class CraterExperimental extends LinearOpMode {
         sleep(250);
 
         //Moves out of lander and orients in front of center block
-        robot.driveDir(Direction.BACKWARDS, 7);
+        robot.driveDir(Direction.BACKWARDS, 3.5);
+        robot.strafe(Direction.LEFT, 3);
        // moveStraight(Direction.BACKWARDS,0.4,0.30);
         sleep(300);
         robot.liftMotor.setPower(-0.6);
@@ -96,14 +97,14 @@ public class CraterExperimental extends LinearOpMode {
         robot.liftMotor.setPower(0);
 
         sleep(250);
-        robot.driveDir(Direction.FORWARDS, 10.5);
+        robot.driveDir(Direction.FORWARDS, 4);
        // moveStraight(Direction.FORWARDS,0.3,0.6);
         sleep(200);
         //robot.strafe();
         //strafe(Direction.LEFT,0.6,1);
-        robot.driveDir(Direction.FORWARDS, 7);
+        robot.strafe(Direction.FORWARDS, 16);
         //moveStraight(Direction.FORWARDS,0.3,0.4);
-        //robot.turn();
+        robot.turn(Direction.LEFT, 90);
         //turn(Direction.LEFT,0.5,1.1);
         // sleep(100);
        // strafe(Direction.LEFT, 0.3,1);
