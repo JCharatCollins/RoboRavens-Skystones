@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.zip.DeflaterInputStream;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 import Team7159.Enums.Direction;
@@ -97,20 +98,15 @@ public class DepotExperimental extends LinearOpMode {
             robot.strafe(Direction.LEFT, 3);
 
 
-        //moveStraight(Direction.BACKWARDS,0.4,0.30);
         sleep(300);
         robot.liftMotor.setPower(-0.6);
         sleep(2000);
         robot.liftMotor.setPower(0);
         sleep(250);
         robot.driveDir(Direction.FORWARDS, 4);
-        //moveStraight(Direction.FORWARDS,0.3,0.5);
         sleep(200);
 
         robot.strafe(Direction.LEFT,14);
-       // strafe(Direction.LEFT,0.6,1);
-      // robot.driveDir(Direction.FORWARDS, 7);
-        //moveStraight(Direction.FORWARDS,0.3,0.4);
        robot.turn(Direction.LEFT,88);
        // turn(Direction.LEFT,0.5,1.1);
         sleep(500);
@@ -132,9 +128,6 @@ public class DepotExperimental extends LinearOpMode {
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
             robot.strafe(Direction.LEFT, 12);
-            //strafe(Direction.LEFT,0.5,1);
-            //robot.driveDir();
-            //moveStraight(Direction.FORWARDS,0.3,0.3);
             sleep(750);
             takePic();
 
@@ -170,24 +163,29 @@ public class DepotExperimental extends LinearOpMode {
 
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
-            //robot.turn();
+            robot.driveDir(Direction.FORWARDS, 20);
+            robot.turn(Direction.RIGHT, 45);
             //turn(Direction.LEFT,0.5,0.35);
-            //robot.strafe();
-            //strafe(Direction.RIGHT,0.6,.9);
+            robot.strafe(Direction.LEFT, 9);
+            robot.driveDir(Direction.BACKWARDS, 10);
         }else if(pos == 1){
-            //robot.turn();
+            robot.driveDir(Direction.FORWARDS, 15);
+            robot.turn(Direction.RIGHT, 45);
+            robot.strafe(Direction.LEFT, 9);
+            robot.driveDir(Direction.BACKWARDS, 7);
+
             //turn(Direction.LEFT,0.5,0.33);
             //robot.strafe();
             //strafe(Direction.RIGHT,0.6,2.3);
             //robot.driveDir();
             //moveStraight(Direction.BACKWARDS, 0.3, 0.8);
         }else if(pos == 2){
-            //robot.turn();
-            //turn(Direction.LEFT,0.5,0.37);
-            //robot.strafe();
-            //strafe(Direction.RIGHT,0.3,0.4);
-            //robot.driveDir();
-            //moveStraight(Direction.FORWARDS,0.3,0.5);
+
+            robot.driveDir(Direction.FORWARDS, 20);
+            robot.turn(Direction.RIGHT, 45);
+            //turn(Direction.LEFT,0.5,0.35);
+            robot.strafe(Direction.LEFT, 18);
+            robot.driveDir(Direction.BACKWARDS, 20);
         }
         else{
             telemetry.addData("test","pos ==3");
