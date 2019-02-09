@@ -85,31 +85,30 @@ public class DepotExperimental extends LinearOpMode {
 
         //Goes down from lander
         robot.liftServo.setPosition(0.225);
-        robot.liftMotor.setPower(0.6);
-        sleep(2000);
+        robot.liftMotor.setPower(0.8);
+        sleep(1500);
         robot.liftMotor.setPower(0);
-        sleep(250);
+       sleep(50);
         //Moves out of lander and orients in front of center block
        // moveStraight(Direction.BACKWARDS,1,2);
 
 
             robot.driveDir(Direction.BACKWARDS, 3.5);
 
-            robot.strafe(Direction.LEFT, 3);
+            robot.strafe(Direction.LEFT, 17);
 
 
-        sleep(300);
-        robot.liftMotor.setPower(-0.6);
-        sleep(2000);
-        robot.liftMotor.setPower(0);
-        sleep(250);
+        //robot.liftMotor.setPower(-0.8);
+        //sleep(1500);
+        /*robot.liftMotor.setPower(0);
+        sleep(50);*/
+
         robot.driveDir(Direction.FORWARDS, 4);
-        sleep(200);
 
-        robot.strafe(Direction.LEFT,14);
+
        robot.turn(Direction.LEFT,88);
        // turn(Direction.LEFT,0.5,1.1);
-        sleep(500);
+        sleep(250);
        ;
         //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
     // sleep(750);
@@ -127,8 +126,9 @@ public class DepotExperimental extends LinearOpMode {
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            robot.strafe(Direction.LEFT, 12);
-            sleep(750);
+            moveRight(12);
+           // robot.strafe(Direction.LEFT, 12);
+            sleep(250);
             takePic();
 
             center(2);
@@ -141,14 +141,15 @@ public class DepotExperimental extends LinearOpMode {
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            moveRight(24);
+            robot.strafe(Direction.LEFT, 24);
+           // moveRight(24);
             //strafe(Direction.RIGHT,0.5,2.2);
-            //robot.driveDir();
+           // robot.driveDir(Direction.FORWARDS, 20);
             //moveStraight(Direction.BACKWARDS,0.3,.3);
 
-            sleep(750);
+            sleep(250);
             center(3);
-            takePic();
+          //  takePic();
         }
 
         /*if(!comp){
@@ -163,17 +164,17 @@ public class DepotExperimental extends LinearOpMode {
 
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
-            robot.driveDir(Direction.FORWARDS, 20);
+            robot.driveDir(Direction.FORWARDS, 40);
             robot.turn(Direction.RIGHT, 45);
             //turn(Direction.LEFT,0.5,0.35);
             robot.strafe(Direction.LEFT, 9);
             robot.driveDir(Direction.BACKWARDS, 10);
         }else if(pos == 1){
-            robot.driveDir(Direction.FORWARDS, 15);
+            robot.driveDir(Direction.FORWARDS, 35);
             robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 9);
-            robot.driveDir(Direction.BACKWARDS, 7);
-
+            //turn(Direction.LEFT,0.5,0.35);
+            robot.strafe(Direction.LEFT, 18);
+            robot.driveDir(Direction.BACKWARDS, 20);
             //turn(Direction.LEFT,0.5,0.33);
             //robot.strafe();
             //strafe(Direction.RIGHT,0.6,2.3);
@@ -181,11 +182,12 @@ public class DepotExperimental extends LinearOpMode {
             //moveStraight(Direction.BACKWARDS, 0.3, 0.8);
         }else if(pos == 2){
 
-            robot.driveDir(Direction.FORWARDS, 20);
+
+            robot.driveDir(Direction.FORWARDS, 35);
             robot.turn(Direction.RIGHT, 45);
-            //turn(Direction.LEFT,0.5,0.35);
-            robot.strafe(Direction.LEFT, 18);
-            robot.driveDir(Direction.BACKWARDS, 20);
+            robot.strafe(Direction.LEFT, 9);
+            robot.driveDir(Direction.BACKWARDS, 7);
+
         }
         else{
             telemetry.addData("test","pos ==3");
@@ -204,61 +206,54 @@ public class DepotExperimental extends LinearOpMode {
             if(sCount == 2){
                 if(fLocation == 1){
                     //gold is in first position, strafe back
-                    //robot.strafe();
-                   // strafe(Direction.LEFT,0.5,1.3);
-                    //robot.driveDir();
-                    //moveStraight(Direction.FORWARDS,0.5,1.3);
-                    //robot.turn();
-                    //turn(Direction.LEFT,0.5,0.37);
-                    //robot.strafe();
-                    //strafe(Direction.RIGHT,0.6,1.1);
+                    moveRight(12);
+                    //robot.strafe(Direction.LEFT, 12);
+                    robot.driveDir(Direction.FORWARDS, 40);
+                    //robot.driveDir(Direction.FORWARDS, 20);
+                    robot.turn(Direction.RIGHT, 45);
+                    //turn(Direction.LEFT,0.5,0.35);
+                    robot.strafe(Direction.LEFT, 9);
+                    robot.driveDir(Direction.BACKWARDS, 10);
                     comp = true;
                 }else if(fLocation == 2){
-                    //robot.strafe();
-                    //strafe(Direction.LEFT,0.5,2.2);
-                    //robot.driveDir();
-                    //moveStraight(Direction.FORWARDS,0.5,1.3);
-                    //robot.turn();
-                    //turn(Direction.LEFT,0.5,0.33);
-                    //robot.strafe();
-                    //strafe(Direction.RIGHT,0.6,2.3);
-                    //robot.driveDir();
-                    //moveStraight(Direction.BACKWARDS, 0.3, 0.8);
+                    moveRight(24);
+                    robot.driveDir(Direction.FORWARDS, 20);
+                    robot.turn(Direction.RIGHT, 45);
+                    //turn(Direction.LEFT,0.5,0.35);
+                    robot.strafe(Direction.LEFT, 18);
+                    robot.driveDir(Direction.BACKWARDS, 20);
+
                 }else if(fLocation == 3){
 
-                    //atarimae da
-                    //robot.driveDir();
-                    //moveStraight(Direction.FORWARDS,0.5,1);
-                    //robot.turn();
-                    //turn(Direction.LEFT,0.5,0.37);
-                    //robot.strafe();
-                    //strafe(Direction.RIGHT,0.3,0.7);
-                    //robot.driveDir();
-                    //moveStraight(Direction.FORWARDS,0.3,0.5);
+
+
+                    robot.driveDir(Direction.FORWARDS, 35);
+                   // robot.driveDir(Direction.FORWARDS, 15);
+                    robot.turn(Direction.RIGHT, 45);
+                    robot.strafe(Direction.LEFT, 9);
+                    robot.driveDir(Direction.BACKWARDS, 7);
                 }
             }
             else{
-                //robot.driveDir();
-                //moveStraight(Direction.FORWARDS,0.5,1);
-                //robot.turn();
-               // turn(Direction.LEFT,0.5,0.37);
-                //robot.strafe();
-                //strafe(Direction.RIGHT,0.3,0.7);
-                //robot.driveDir();
-                //moveStraight(Direction.FORWARDS,0.3,0.5);
+
+                robot.driveDir(Direction.FORWARDS, 35);
+                // robot.driveDir(Direction.FORWARDS, 15);
+                robot.turn(Direction.RIGHT, 45);
+                robot.strafe(Direction.LEFT, 9);
+                robot.driveDir(Direction.BACKWARDS, 7);
             }
 
         }
 
         //Should set down the team marker and get out
-       // lower(0.6,0.5);
-        //robot.driveDir();
+        lower(0.7,0.5);
+        robot.driveDir(Direction.BACKWARDS,10 );
         //moveStraight(Direction.BACKWARDS,0.5,1);
-       // raise(0.6,0.5);
+        raise(0.6,0.5);
 
         //Drive towards crater
-        //robot.driveDir();
-        //moveStraight(Direction.BACKWARDS,0.5,1.5);
+        robot.turn(Direction.RIGHT, 180);
+        robot.driveDir(Direction.FORWARDS, 35);
         //robot.turn();
         //turn(Direction.LEFT,0.5,1.9);
         //robot.driveDir();
@@ -267,7 +262,7 @@ public class DepotExperimental extends LinearOpMode {
         //Sets down vacuumMotor to get above crater
 
 
-      //  lower(0.3,1);
+        lower(0.3,1);
         //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
         //TODO: Add in code to drop off marker in depot
 

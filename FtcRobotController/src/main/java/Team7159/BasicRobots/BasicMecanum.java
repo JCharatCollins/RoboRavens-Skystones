@@ -76,7 +76,7 @@ public class BasicMecanum {
         Right.setTargetPosition(RightDistance);
         Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        moveStraight(0.5);
+        moveStraight(1);
         while (Left.isBusy() && Right.isBusy()) {
         }
         stop();
@@ -101,7 +101,7 @@ public class BasicMecanum {
                 Left.setTargetPosition(pos);
                 break;
         }
-       moveStraight(0.5);
+       moveStraight(1);
         while (Right.isBusy() && Left.isBusy()) {
         }
         stop();
@@ -132,7 +132,7 @@ public class BasicMecanum {
                 RBMotor.setTargetPosition((int)pos);
                 break;
         }
-        moveStraight(0.5);
+        moveStraight(1);
 
         while (Right.isBusy() && Left.isBusy()) {
 
