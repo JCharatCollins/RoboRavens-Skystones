@@ -82,37 +82,35 @@ public class CraterExperimental extends LinearOpMode {
 
         //Goes down from lander
 
-        robot.liftMotor.setPower(0.6);
-        sleep(2000);
+        //Goes down from lander
+        robot.liftServo.setPosition(0.225);
+        robot.liftMotor.setPower(0.8);
+        sleep(1500);
         robot.liftMotor.setPower(0);
-        sleep(250);
-
+        sleep(50);
         //Moves out of lander and orients in front of center block
-        robot.driveDir(Direction.BACKWARDS, 3.5);
-        robot.strafe(Direction.LEFT, 3);
-       // moveStraight(Direction.BACKWARDS,0.4,0.30);
-        sleep(300);
-        robot.liftMotor.setPower(-0.6);
-        sleep(2000);
-        robot.liftMotor.setPower(0);
+        // moveStraight(Direction.BACKWARDS,1,2);
 
+
+        robot.driveDir(Direction.BACKWARDS, 4.5);
+
+        robot.strafe(Direction.LEFT, 17);
+
+
+        //robot.liftMotor.setPower(-0.8);
+        //sleep(1500);
+        /*robot.liftMotor.setPower(0);
+        sleep(50);*/
+
+        robot.driveDir(Direction.FORWARDS, 8);
+
+
+        robot.turn(Direction.LEFT,90);
+        // turn(Direction.LEFT,0.5,1.1);
         sleep(250);
-        robot.driveDir(Direction.FORWARDS, 4);
-       // moveStraight(Direction.FORWARDS,0.3,0.6);
-        sleep(200);
-        //robot.strafe();
-        //strafe(Direction.LEFT,0.6,1);
-        robot.strafe(Direction.FORWARDS, 16);
-        //moveStraight(Direction.FORWARDS,0.3,0.4);
-        robot.turn(Direction.LEFT, 90);
-        //turn(Direction.LEFT,0.5,1.1);
-        // sleep(100);
-       // strafe(Direction.LEFT, 0.3,1);
-        //robot.strafe();
-        //strafe(Direction.LEFT, 0.3,0.4);
-
+        ;
         //set all sleeps before vuforia to 200, if this doesnt work then change back to 500, then 750
-        sleep(750);
+        // sleep(750);
         //Checks the center location for mineral and determines what it is
         //If it determines it is gold, drives forward to knock if off, else increments pos
         takePic();
@@ -122,44 +120,36 @@ public class CraterExperimental extends LinearOpMode {
 
         //If is gold, will move forwards again and sets comp to true
         if(pos == 0){
-            //robot.driveDir();
-            //moveStraight(Direction.FORWARDS,0.5,.8);
+
             comp = true;
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            //robot.strafe();
-            //strafe(Direction.LEFT,0.5,1.3);
-            //robot.driveDir();
-            //moveStraight(Direction.FORWARDS,0.3,0.3);
-            sleep(750);
+            moveRight(14);
+            // robot.strafe(Direction.LEFT, 12);
+            sleep(250);
             takePic();
+
             center(2);
         }
         //Takes picture
 
         //If it's 1 this position or last was gold, so if its not completed its this position
         if(pos == 1 && !comp){
-            //robot.driveDir();
-            //moveStraight(Direction.FORWARDS,0.5,.8);
+
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            //robot.strafe();
-            //strafe(Direction.RIGHT,0.5,2.2);
-            //robot.driveDir();
-            //moveStraight(Direction.BACKWARDS,0.3,.2);
+            robot.strafe(Direction.LEFT, 26);
 
-            sleep(750);
-            takePic();
+            sleep(250);
             center(3);
+            //If it finds it will drive forward 20s
+
+
+            //  takePic();
         }
-
-        //Pulls out to a safe distance
-        
-        //robot.driveDir();
-        //moveStraight(Direction.BACKWARDS,0.5,0.3);
-
+        /*
         if(pos == 0) {
         //robot.strafe();
             //strafe(Direction.LEFT,0.6,1.5);
@@ -263,7 +253,7 @@ public class CraterExperimental extends LinearOpMode {
         //turn(Direction.LEFT,0.5,1.8);
         //robot.driveDir();
         //moveStraight(Direction.FORWARDS,0.5,0.5);
-
+*/
         //Sets down vacuumMotor to get above crater
         lower(0.3,1);
 
@@ -404,7 +394,6 @@ public class CraterExperimental extends LinearOpMode {
 
     public void center(int cPos){
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-
         if(updatedRecognitions.size() == 1){
             Recognition rec = updatedRecognitions.get(0);
             if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
@@ -412,20 +401,44 @@ public class CraterExperimental extends LinearOpMode {
                 telemetry.update();
                 //uncomment these when you want the gold detection to work, delete the moveStraight
                 runUntilCenter((int)rec.getTop());
-                //robot.driveDir();
-                //moveStraight(Direction.FORWARDS,0.5,1);
-//                pos++;
+                robot.driveDir(Direction.FORWARDS, 20);
+
             }else{
                 sPos[cPos-1] = true;
                 telemetry.addData("found","silver mineral found" + String.valueOf(cPos));
                 telemetry.update();
                 pos++;
             }
-        }else{
-                telemetry.addData("Size",updatedRecognitions.size());
-                pos++;
-                telemetry.addData("center","nothing found");
+        }else if(updatedRecognitions.size()>1) {
+            telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+            telemetry.addData("checking for gold","balls");
+            telemetry.update();
+            //Additional redundancy, treating bigger size as gold
+            boolean goldF = false;
+            for(Recognition rec: updatedRecognitions){
+                if(rec.getLabel().equals(LABEL_GOLD_MINERAL)){
+                    telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+                    telemetry.addData(" gold"," found");
+                    telemetry.update();
+                    if(rec.getConfidence()>=0.9) goldF = true;
+                }
+            }
+            if(goldF) {
+                robot.driveDir(Direction.FORWARDS, 40);
+            }else {
+                telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
+                telemetry.addData(" gold not found"," assuming is silver");
                 telemetry.update();
+                sPos[cPos-1] = true;
+
+                pos++;
+            }
+        }else {
+            telemetry.addData("Size",updatedRecognitions.size());
+
+            pos++;
+            telemetry.addData("center","nothing found");
+            telemetry.update();
 //            moveStraight(Direction.FORWARDS,0.5,1);
         }
     }
@@ -460,6 +473,11 @@ public class CraterExperimental extends LinearOpMode {
             e.printStackTrace();
         }
     }
-    
 
+    private void moveRight(int distance)
+    {
+        robot.turn(Direction.RIGHT, 90);
+        robot.driveDir(Direction.FORWARDS, distance);
+        robot.turn(Direction.LEFT, 90);
+    }
 }

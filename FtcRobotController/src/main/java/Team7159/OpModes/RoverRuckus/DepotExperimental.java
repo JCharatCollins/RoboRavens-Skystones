@@ -106,7 +106,7 @@ public class DepotExperimental extends LinearOpMode {
         robot.driveDir(Direction.FORWARDS, 8);
 
 
-       robot.turn(Direction.LEFT,96);
+       robot.turn(Direction.LEFT,90);
        // turn(Direction.LEFT,0.5,1.1);
         sleep(250);
        ;
@@ -234,9 +234,7 @@ public class DepotExperimental extends LinearOpMode {
         //Should set down the team marker and get out
 
 
-        //GO BEARS
 
-        /*
 
         lower(0.7,0.5);
         robot.driveDir(Direction.BACKWARDS,10 );
@@ -247,7 +245,7 @@ public class DepotExperimental extends LinearOpMode {
         robot.turn(Direction.RIGHT, 170);
         robot.driveDir(Direction.FORWARDS, 35);
 
-        */
+
 
 
 
