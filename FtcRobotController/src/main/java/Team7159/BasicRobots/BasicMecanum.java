@@ -80,8 +80,6 @@ public class BasicMecanum {
         while (Left.isBusy() && Right.isBusy()) {
         }
         stop();
-        Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void driveDir(Direction direction, double distance) {
@@ -105,8 +103,6 @@ public class BasicMecanum {
         while (Right.isBusy() && Left.isBusy()) {
         }
         stop();
-        Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void strafe(Direction direction, int distance)
     {
@@ -138,8 +134,6 @@ public class BasicMecanum {
 
         }
         stop();
-        Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
