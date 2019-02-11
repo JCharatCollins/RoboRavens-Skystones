@@ -86,7 +86,7 @@ public class DepotExperimental extends LinearOpMode {
         //Goes down from lander
         robot.liftServo.setPosition(0.225);
         robot.liftMotor.setPower(0.8);
-        sleep(1500);
+        sleep(1700);
         robot.liftMotor.setPower(0);
        sleep(50);
         //Moves out of lander and orients in front of center block
@@ -103,7 +103,7 @@ public class DepotExperimental extends LinearOpMode {
         /*robot.liftMotor.setPower(0);
         sleep(50);*/
 
-        robot.driveDir(Direction.FORWARDS, 6);
+        robot.driveDir(Direction.FORWARDS, 4);
 
 
        robot.turn(Direction.LEFT,90);
@@ -126,7 +126,7 @@ public class DepotExperimental extends LinearOpMode {
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            moveRight(14);
+            moveRight(13);
            // robot.strafe(Direction.LEFT, 12);
             sleep(500);
             takePic();
@@ -141,7 +141,7 @@ public class DepotExperimental extends LinearOpMode {
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            robot.strafe(Direction.LEFT, 26);
+            robot.strafe(Direction.LEFT, 27);
             robot.driveDir(Direction.FORWARDS, 5);
             sleep(500);
             takePic();
@@ -169,16 +169,16 @@ public class DepotExperimental extends LinearOpMode {
             robot.driveDir(Direction.BACKWARDS, 10);
         }else if(pos == 1){
             //Right
-            robot.driveDir(Direction.FORWARDS, 25);
+            robot.driveDir(Direction.FORWARDS, 20);
             robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 30);
+            robot.strafe(Direction.LEFT, 27);
             robot.driveDir(Direction.BACKWARDS, 25);
         }else if(pos == 2){
             //Left
             robot.driveDir(Direction.FORWARDS, 15);
             robot.turn(Direction.RIGHT, 45);
             robot.strafe(Direction.LEFT, 7);
-            robot.driveDir(Direction.FORWARDS, 7);
+            robot.driveDir(Direction.FORWARDS, 5);
             //Lower here
         } else{
             telemetry.addData("test","pos ==3");
@@ -205,8 +205,8 @@ public class DepotExperimental extends LinearOpMode {
                     robot.driveDir(Direction.BACKWARDS, 10);
                     comp = true;
                 }else if(fLocation == 2){
-                    moveRight(26);
-                    robot.driveDir(Direction.FORWARDS, 45);
+                    moveRight(27);
+                    robot.driveDir(Direction.FORWARDS, 40);
                     robot.turn(Direction.RIGHT, 45);
                     //turn(Direction.LEFT,0.5,0.35);
                     robot.strafe(Direction.LEFT, 30);
@@ -241,14 +241,14 @@ public class DepotExperimental extends LinearOpMode {
         robot.chainMotor.setPower(0.6);
         sleep(500);
         robot.chainMotor.setPower(0);
-        robot.driveDir(Direction.BACKWARDS,35 );
+        robot.driveDir(Direction.BACKWARDS,35);
 
         //moveStraight(Direction.BACKWARDS,0.5,1);
         raise(0.6,0.5);
 
         //Drive towards crater
         robot.turn(Direction.RIGHT, 180);
-        robot.driveDir(Direction.FORWARDS, 10);
+        robot.driveDir(Direction.FORWARDS, 20);
 
 
 

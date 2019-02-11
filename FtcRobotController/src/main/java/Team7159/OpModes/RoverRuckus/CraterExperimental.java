@@ -161,22 +161,13 @@ public class CraterExperimental extends LinearOpMode {
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
             //Center
-            robot.driveDir(Direction.FORWARDS, 30);
-            robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 15);
-            robot.driveDir(Direction.BACKWARDS, 10);
+
         }else if(pos == 1){
             //Right
-            robot.driveDir(Direction.FORWARDS, 35);
-            robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 30);
-            robot.driveDir(Direction.BACKWARDS, 25);
+
         }else if(pos == 2){
             //Left
-            robot.driveDir(Direction.FORWARDS, 25);
-            robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 7);
-            robot.driveDir(Direction.FORWARDS, 7);
+
             //Lower here
         } else{
             telemetry.addData("test","pos ==3");
@@ -196,16 +187,16 @@ public class CraterExperimental extends LinearOpMode {
                 if(fLocation == 1){
                     //gold is in first position, strafe back
                     moveRight(12);
-                    robot.driveDir(Direction.FORWARDS, 50);
+                    robot.driveDir(Direction.FORWARDS, 20);
 
                     comp = true;
                 }else if(fLocation == 2){
                     moveRight(26);
-                    robot.driveDir(Direction.FORWARDS, 55);
+                    robot.driveDir(Direction.FORWARDS, 20);
                    comp=true;
 
                 }else if(fLocation == 3){
-                    robot.driveDir(Direction.FORWARDS, 45);
+                    robot.driveDir(Direction.FORWARDS, 20);
                     // robot.driveDir(Direction.FORWARDS, 15);
                    comp=true;
                 }
