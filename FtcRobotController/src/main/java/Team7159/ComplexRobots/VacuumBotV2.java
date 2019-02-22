@@ -39,7 +39,6 @@ public class VacuumBotV2 extends BasicMecanum {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         vacuumMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         vacuumMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

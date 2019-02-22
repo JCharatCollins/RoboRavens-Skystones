@@ -17,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.zip.DeflaterInputStream;
 
 import Team7159.ComplexRobots.VacuumBotV2;
 import Team7159.Enums.Direction;
@@ -164,13 +163,13 @@ public class DepotExperimental extends LinearOpMode {
             //Center
             robot.driveDir(Direction.FORWARDS, 15);
             robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 15);
+            robot.strafe(Direction.LEFT, 10);
             robot.driveDir(Direction.BACKWARDS, 10);
         }else if(pos == 1){
             //Right
             robot.driveDir(Direction.FORWARDS, 15);
             robot.turn(Direction.RIGHT, 45);
-            robot.strafe(Direction.LEFT, 10);
+            robot.strafe(Direction.LEFT, 15);
             robot.driveDir(Direction.BACKWARDS, 15);
         }else if(pos == 2){
             //Left
