@@ -23,95 +23,93 @@ public class TeleOp2Person extends LinearOpMode {
     //The robot
     private VacuumBotV2 robot = new VacuumBotV2();
 
+    public void runOpMode() {
+        //Linear Actuator direction
+        int vDir;
+        //Vacuum direction
+        int hDir;
+        //Chain direction
 
-    @Override
-    public void runOpMode(){
+        int cDir;
         robot.init(hardwareMap);
-        robot.liftServo.setPosition(0.225);
+        robot.liftServo.setPosition(0.3);
         waitForStart();
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
 
-            //Sets the di  rection of the liftMotor for moving up or down
+            //Sets the direction of the liftMotor for moving up or down
 
-            if(gamepad1.right_trigger>0.1){
-                vDir = 2;
-            } else if(gamepad1.right_bumper){
+            if (gamepad1.y) {
                 vDir = 1;
-            }else{
+            } else if (gamepad1.a) {
+                vDir = 2;
+            } else {
                 vDir = 0;
             }
 
             //Sets the direction of the CR servos for moving either in or out
             //Up should be moving out, down should be moving in
 
-            if(gamepad2.dpad_up){
+            if (gamepad2.dpad_up) {
                 hDir = 1;
-            }else if(gamepad2.dpad_down){
+            } else if (gamepad2.dpad_down) {
                 hDir = 2;
-            }else{
+            } else {
                 hDir = 0;
             }
 
             //Sets the direction of the chain for moving the cleaners in and out
             //X should be picking up, B should be shooting out
 
-            if(gamepad2.x){
+            if (gamepad2.x) {
                 cDir = 1;
-            }else if(gamepad2.b){
+            } else if (gamepad2.b) {
                 cDir = 2;
-            }else{
+            } else {
                 cDir = 0;
             }
 
             //Makes the lift motor go up and down
 
-            if(vDir == 0){
+            if (vDir == 0) {
                 robot.liftMotor.setPower(0);
-            }else if(vDir == 1){
+            } else if (vDir == 1) {
                 robot.liftMotor.setPower(1);
-            }else if(vDir == 2){
+            } else if (vDir == 2) {
                 robot.liftMotor.setPower(-1);
             }
-/*
-            //Makes the crServo go in and out
-            if(hDir == 0){
-                robot.rServo.setPower(0);
-                robot.lServo.setPower(0);
-            }else if(hDir == 1){
-                robot.rServo.setPower(0.6);
-                robot.lServo.setPower(-0.6);
-            }else if(hDir == 2){
-                robot.rServo.setPower(-0.6);
-                robot.lServo.setPower(0.6);
+
+            //Makes the rack and pinion motor go in and out
+            if (hDir == 0) {
+                robot.intakeMotor.setPower(0);
+            } else if (hDir == 1) {
+                robot.intakeMotor.setPower(0.9);
+            } else if (hDir == 2) {
+                robot.intakeMotor.setPower(-0.9);
             }
-*/
+
             //Makes the chain rotate, and by extension the rotater
-            if(cDir == 0){
+            if (cDir == 0) {
                 robot.chainMotor.setPower(0);
-            }else if(cDir == 1){
-                robot.chainMotor.setPower(0.6);
-            }else if(cDir == 2){
-                robot.chainMotor.setPower(-0.6);
+            } else if (cDir == 1) {
+                robot.chainMotor.setPower(0.5);
+            } else if (cDir == 2) {
+                robot.chainMotor.setPower(-0.5);
             }
 
-
-            //TODO: Find the values to set armServo to dump back
-            if(gamepad1.right_bumper){
-                robot.liftServo.setPosition(0.9);
+            if (gamepad1.right_bumper) {
+                robot.liftServo.setPosition(0.8);
             }
 
-            if(gamepad1.right_trigger>0.1){
+            if (gamepad1.right_trigger > 0.1) {
                 robot.liftServo.setPosition(0.24);
             }
 
-            if(gamepad1.left_bumper){
+            if (gamepad2.left_bumper) {
                 robot.vacuumMotor.setPower(1);
-                lower();
             }
 
-            if(gamepad1.left_trigger>0.1){
+            if (gamepad2.left_trigger > 0.1) {
                 robot.vacuumMotor.setPower(-1);
-                raise();
             }
 
             robot.vacuumMotor.setPower(0);
@@ -121,11 +119,11 @@ public class TeleOp2Person extends LinearOpMode {
             double lf = -gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
             double lb = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
 
-            double maxr = Math.max(Math.abs(rf),Math.abs(rb));
-            double maxl = Math.max(Math.abs(lf),Math.abs(lb));
+            double maxr = Math.max(Math.abs(rf), Math.abs(rb));
+            double maxl = Math.max(Math.abs(lf), Math.abs(lb));
 
             double max = Math.max(maxr, maxl);
-            if(max != 0 && max > 1) {
+            if (max != 0 && max > 1) {
                 rf /= max;
                 rb /= max;
                 lf /= max;
@@ -137,18 +135,5 @@ public class TeleOp2Person extends LinearOpMode {
             robot.LFMotor.setPower(lf);
             robot.LBMotor.setPower(lb);
         }
-
     }
-
-
-    //TODO: Find the positions for lowering the motor for the Vacuum using encoders or time
-    public void lower(){
-
-    }
-
-    //TODO: Find the positions for raising the motor for the Vacuum using encoders or time
-    public void raise(){
-
-    }
-
 }

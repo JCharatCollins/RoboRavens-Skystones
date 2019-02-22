@@ -84,18 +84,18 @@ public class TeleOp extends LinearOpMode {
             if(hDir == 0){
                 robot.intakeMotor.setPower(0);
             }else if(hDir == 1){
-                robot.intakeMotor.setPower(0.8);
+                robot.intakeMotor.setPower(0.9);
             }else if(hDir == 2){
-                robot.intakeMotor.setPower(-0.8);
+                robot.intakeMotor.setPower(-0.9);
             }
 
             //Makes the chain rotate, and by extension the rotater
             if(cDir == 0){
                 robot.chainMotor.setPower(0);
             }else if(cDir == 1){
-                robot.chainMotor.setPower(0.6);
+                robot.chainMotor.setPower(0.5);
             }else if(cDir == 2){
-                robot.chainMotor.setPower(-0.6);
+                robot.chainMotor.setPower(-0.5);
             }
 
             if(gamepad1.right_bumper){

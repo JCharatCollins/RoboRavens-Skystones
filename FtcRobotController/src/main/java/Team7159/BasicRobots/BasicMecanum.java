@@ -128,7 +128,7 @@ public class BasicMecanum {
                 RBMotor.setTargetPosition((int)pos);
                 break;
         }
-        moveStraight(1);
+        moveStraight(0.7);
 
         while (Right.isBusy() && Left.isBusy()) {
 
