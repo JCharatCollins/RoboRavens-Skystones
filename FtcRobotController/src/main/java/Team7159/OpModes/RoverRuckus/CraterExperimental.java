@@ -239,6 +239,11 @@ public class CraterExperimental extends LinearOpMode {
         raise(0.7, 0.5);
         robot.driveDir(Direction.FORWARDS, 10);
         lower(0.7, 0.5);
+
+        robot.liftMotor.setPower(-0.8);
+        sleep(1500);
+        robot.liftMotor.setPower(0);
+        sleep(200);
     }
 
     private void stopMotors(){
