@@ -84,8 +84,8 @@ public class DepotExperimental extends LinearOpMode {
 
         //Goes down from lander
         robot.liftServo.setPosition(0.225);
-        robot.liftMotor.setPower(0.8);
-        sleep(1800);
+        robot.liftMotor.setPower(0.9);
+        sleep(2000);
         robot.liftMotor.setPower(0);
        sleep(50);
         //Moves out of lander and orients in front of center block

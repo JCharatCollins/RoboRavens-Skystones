@@ -48,26 +48,28 @@ public class TestAuto extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
+//        initVuforia();
+//
+//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+//            initTfod();
+//        } else {
+//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+//        }
 
         waitForStart();
-        sleep(1000);
-        robot.vacuumMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.vacuumMotor.setPower(-0.3);
-        sleep(700);
-        //robot.moveStraight(-0.3);
-        //sleep(700);
-        //robot.stop();
-        robot.vacuumMotor.setPower(0.3);
-        sleep(800);
-        robot.vacuumMotor.setPower(0);
-        sleep(150);
+
+        strafe(Direction.LEFT,0.5,2);
+//        sleep(1000);
+//        robot.vacuumMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.vacuumMotor.setPower(-0.3);
+//        sleep(700);
+//        //robot.moveStraight(-0.3);
+//        //sleep(700);
+//        //robot.stop();
+//        robot.vacuumMotor.setPower(0.3);
+//        sleep(800);
+//        robot.vacuumMotor.setPower(0);
+//        sleep(150);
 //        strafe(Direction.LEFT,0.5,1.2);
 
 

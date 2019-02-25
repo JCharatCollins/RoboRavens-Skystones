@@ -83,8 +83,8 @@ public class CraterExperimental extends LinearOpMode {
         //Goes down from lander
 
         robot.liftServo.setPosition(0.225);
-        robot.liftMotor.setPower(0.8);
-        sleep(1800);
+        robot.liftMotor.setPower(0.9);
+        sleep(1850);
         robot.liftMotor.setPower(0);
         sleep(50);
         //Moves out of lander and orients in front of center block
@@ -92,6 +92,12 @@ public class CraterExperimental extends LinearOpMode {
 
 
         robot.driveDir(Direction.BACKWARDS, 4);
+
+//        robot.liftMotor.setPower(-1);
+//        sleep(1000);
+//        robot.liftMotor.setPower(0);
+//        sleep(50);
+//        robot.driveDir(Direction.FORWARDS, 2);
 
         robot.strafe(Direction.LEFT, 13);
 
@@ -101,7 +107,7 @@ public class CraterExperimental extends LinearOpMode {
         /*robot.liftMotor.setPower(0);
         sleep(50);*/
 
-        robot.driveDir(Direction.FORWARDS, 6);
+        robot.driveDir(Direction.FORWARDS, 4);
 
 
         robot.turn(Direction.LEFT,90);
@@ -161,27 +167,29 @@ public class CraterExperimental extends LinearOpMode {
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
             //Center
-            robot.driveDir(Direction.BACKWARDS, 20);
-            robot.turn(Direction.LEFT, 90);
-            robot.driveDir(Direction.FORWARDS, 60);
-            robot.turn(Direction.LEFT, 45);
+            robot.driveDir(Direction.BACKWARDS, 10);
+            robot.turn(Direction.LEFT, 85);
+            robot.driveDir(Direction.FORWARDS, 62);
+            robot.turn(Direction.LEFT, 30);
 
 
 
         }else if(pos == 1){
 
-            robot.driveDir(Direction.BACKWARDS, 20);
-            robot.turn(Direction.LEFT, 90);
-            robot.driveDir(Direction.FORWARDS, 85);
-            robot.turn(Direction.LEFT, 45);
+            robot.driveDir(Direction.BACKWARDS, 10);
+            robot.turn(Direction.LEFT, 85);
+            robot.driveDir(Direction.FORWARDS, 60);
+            robot.turn(Direction.LEFT, 30);
 
 
         }else if(pos == 2){
 
-            robot.driveDir(Direction.BACKWARDS, 20);
+            robot.driveDir(Direction.BACKWARDS, 8);
             robot.turn(Direction.LEFT, 90);
-            robot.driveDir(Direction.FORWARDS, 50);
-            robot.turn(Direction.LEFT, 45);
+            robot.driveDir(Direction.FORWARDS, 20);
+            robot.turn(Direction.LEFT, 30);
+            //robot.driveDir(Direction.FORWARDS, 10);
+
 
             //Lower here
         } else{
@@ -227,23 +235,23 @@ public class CraterExperimental extends LinearOpMode {
         }
 
 
-        robot.driveDir(Direction.FORWARDS, 40);
+        robot.driveDir(Direction.FORWARDS, 20);
 
         //Sets down vacuumMotor to get above crater
-        lower(0.7,0.5);
-        robot.chainMotor.setPower(0.6);
-        sleep(500);
+        lower(0.9,0.3);
+        robot.chainMotor.setPower(0.8);
+        sleep(200);
         robot.chainMotor.setPower(0);
-        robot.driveDir(Direction.BACKWARDS, 65);
+        robot.driveDir(Direction.BACKWARDS, 45);
+        raise(0.9, 0.3);
         robot.turn(Direction.LEFT, 180);
-        raise(0.7, 0.5);
         robot.driveDir(Direction.FORWARDS, 10);
         lower(0.7, 0.5);
-
-        robot.liftMotor.setPower(-0.8);
+        robot.liftMotor.setPower(-0.9);
         sleep(1500);
         robot.liftMotor.setPower(0);
-        sleep(200);
+//        sleep(50);
+
     }
 
     private void stopMotors(){
