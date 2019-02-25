@@ -177,7 +177,7 @@ public class DepotExperimental extends LinearOpMode {
             robot.driveDir(Direction.FORWARDS, 15);
             robot.turn(Direction.RIGHT, 45);
             robot.strafe(Direction.LEFT, 7);
-            robot.driveDir(Direction.FORWARDS, 5);
+           // robot.driveDir(Direction.FORWARDS, 5);
             //Lower here
         } else{
             telemetry.addData("test","pos ==3");
@@ -216,7 +216,7 @@ public class DepotExperimental extends LinearOpMode {
                    // robot.driveDir(Direction.FORWARDS, 15);
                     robot.turn(Direction.RIGHT, 45);
                     robot.strafe(Direction.LEFT, 10);
-                    robot.driveDir(Direction.FORWARDS, 7);
+                  //  robot.driveDir(Direction.FORWARDS, 7);
                 }
             }
             else{
