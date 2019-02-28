@@ -100,12 +100,7 @@ public class MotorGroup {
     //Checks if busy for all motors
 
     public boolean isBusy() {
-        for(DcMotor motor: dcMotors){
-            if(motor.isBusy()){
-                return true;
-            }
-        }
-        return false;
+        return dcMotors.get(0).isBusy();
     }
 
     //Gets position

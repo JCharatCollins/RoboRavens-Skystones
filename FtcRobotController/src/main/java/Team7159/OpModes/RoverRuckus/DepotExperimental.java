@@ -29,7 +29,7 @@ import static Team7159.Utils.BitmapManip.saveImageToExternalStorage;
 public class DepotExperimental extends LinearOpMode {
 
     boolean[] sPos = new boolean[3];
-
+    boolean lower = true;
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -125,7 +125,31 @@ public class DepotExperimental extends LinearOpMode {
         }else{
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            moveRight(13);
+
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+
+                    try {
+
+
+                        robot.liftMotor.setPower(-0.8);
+                        sleep(1500);
+                        robot.liftMotor.setPower(0);
+                        sleep(200);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
+            lower = false;
+
+            robot.strafe(Direction.RIGHT, 13);
+          //  moveRight(13);
            // robot.strafe(Direction.LEFT, 12);
             sleep(500);
             takePic();
@@ -261,11 +285,19 @@ public class DepotExperimental extends LinearOpMode {
         //Sets down vacuumMotor to get above crater
 
 
-        lower(0.3,1);
-        robot.liftMotor.setPower(-0.8);
+    lower(0.3, 1);
+    robot.liftMotor.setPower(-0.8);
+    sleep(1500);
+    robot.liftMotor.setPower(0);
+    sleep(200);
+
+    if(lower)
+    {
+        robot.liftMotor.setPower(-0.9);
         sleep(1500);
         robot.liftMotor.setPower(0);
-        sleep(200);
+        sleep(50);
+    }
         //IF WE WANT TO PARK CAN SET DOWN VACUUM AS IN BELOW
         //TODO: Add in code to drop off marker in depot
 

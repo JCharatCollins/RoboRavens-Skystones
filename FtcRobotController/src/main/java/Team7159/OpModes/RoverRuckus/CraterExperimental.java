@@ -31,7 +31,7 @@ public class CraterExperimental extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-
+    boolean lower = true;
 
     //Used for vuforia
     private VuforiaLocalizer vuforia;
@@ -84,7 +84,7 @@ public class CraterExperimental extends LinearOpMode {
 
         robot.liftServo.setPosition(0.225);
         robot.liftMotor.setPower(0.9);
-        sleep(1850);
+        sleep(1600);
         robot.liftMotor.setPower(0);
         sleep(50);
         //Moves out of lander and orients in front of center block
@@ -110,7 +110,7 @@ public class CraterExperimental extends LinearOpMode {
         robot.driveDir(Direction.FORWARDS, 4);
 
 
-        robot.turn(Direction.LEFT,90);
+        robot.turn(Direction.LEFT,88);
         // turn(Direction.LEFT,0.5,1.1);
         sleep(500);
 
@@ -127,10 +127,33 @@ public class CraterExperimental extends LinearOpMode {
         if(pos == 0){
 
             comp = true;
-        }else{
+        }else {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+
+                    try {
+
+
+                        robot.liftMotor.setPower(-0.8);
+                        sleep(1500);
+                        robot.liftMotor.setPower(0);
+                        sleep(200);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
+
+            lower = false;
             //pos will be equal to 1, meaning was either silver or not found.
             //Check to strafe left
-            moveRight(14);
+            robot.strafe(Direction.RIGHT, 15);
+            //moveRight(14);
             // robot.strafe(Direction.LEFT, 12);
             sleep(500);
             takePic();
@@ -145,8 +168,8 @@ public class CraterExperimental extends LinearOpMode {
             comp = true;
         } else if(pos == 2){
             //If position is 2 then it means it must be the last one
-            robot.strafe(Direction.LEFT, 26);
-            robot.driveDir(Direction.FORWARDS, 5);
+            robot.strafe(Direction.LEFT, 28);
+            //robot.driveDir(Direction.FORWARDS, 5);
             sleep(500);
             takePic();
             center(3);
@@ -162,95 +185,106 @@ public class CraterExperimental extends LinearOpMode {
 
         //WHATEVER IS BELOW HERE HAS NOT BEEN TESTED, HENCE EXPERIMENTAL
 
+        if(pos == 3) {
+            telemetry.addData("test", "pos ==3");
+            int sCount = 0;
+            int fLocation = 0;
+            for (int i = 0; i < 3; i++) {
+                if (sPos[i]) {
+                    sCount++;
+                } else {
+                    fLocation = i + 1;
+                }
+            }
+            telemetry.addData("test", "stop flaming me aidan " + String.valueOf(sCount) + " " + String.valueOf(fLocation));
+            telemetry.update();
+            if (sCount == 2) {
+                if (fLocation == 1) {
+                    //gold is in first position, strafe back
+                    moveRight(12);
+                    robot.driveDir(Direction.FORWARDS, 15);
+                    pos = 0;
+                } else if (fLocation == 2) {
+                    robot.strafe(Direction.RIGHT, 26);
+                    //moveRight(26);
+                    robot.driveDir(Direction.FORWARDS, 15);
+                    comp = true;
+                    pos = 1;
 
-
+                } else if (fLocation == 3) {
+                    robot.driveDir(Direction.FORWARDS, 15);
+                    // robot.driveDir(Direction.FORWARDS, 15);
+                    comp = true;
+                    pos=2;
+                }
+            } else {
+                robot.driveDir(Direction.FORWARDS, 15);
+                robot.driveDir(Direction.BACKWARDS, 8);
+                robot.turn(Direction.LEFT, 90);
+                robot.driveDir(Direction.FORWARDS, 35);
+                robot.turn(Direction.LEFT, 32);
+                comp = true;
+            }
+        }
         //This should equalize positions to against the wall, back facing the crater
         if(pos == 0) {
             //Center
             robot.driveDir(Direction.BACKWARDS, 10);
             robot.turn(Direction.LEFT, 85);
-            robot.driveDir(Direction.FORWARDS, 62);
-            robot.turn(Direction.LEFT, 30);
+            robot.driveDir(Direction.FORWARDS, 56);
+            robot.turn(Direction.LEFT, 33);
 
 
 
         }else if(pos == 1){
-
-            robot.driveDir(Direction.BACKWARDS, 10);
+            //Right
+            robot.driveDir(Direction.BACKWARDS, 14);
             robot.turn(Direction.LEFT, 85);
-            robot.driveDir(Direction.FORWARDS, 60);
-            robot.turn(Direction.LEFT, 30);
+            robot.driveDir(Direction.FORWARDS, 65);
+            robot.turn(Direction.LEFT, 33);
 
 
         }else if(pos == 2){
-
+            //Left
             robot.driveDir(Direction.BACKWARDS, 8);
             robot.turn(Direction.LEFT, 90);
-            robot.driveDir(Direction.FORWARDS, 20);
-            robot.turn(Direction.LEFT, 30);
+            robot.driveDir(Direction.FORWARDS, 35);
+            robot.turn(Direction.LEFT, 32);
             //robot.driveDir(Direction.FORWARDS, 10);
 
 
             //Lower here
-        } else{
-            telemetry.addData("test","pos ==3");
-            int sCount = 0;
-            int fLocation = 0;
-            for (int i = 0; i <3;i++)
-            {
-                if(sPos[i]){
-                    sCount++;
-                }else{
-                    fLocation = i+1;
-                }
-            }
-            telemetry.addData("test", "stop flaming me aidan "+String.valueOf(sCount) + " " + String.valueOf(fLocation));
-            telemetry.update();
-            if(sCount == 2){
-                if(fLocation == 1){
-                    //gold is in first position, strafe back
-                    moveRight(12);
-                    robot.driveDir(Direction.FORWARDS, 20);
-
-                    comp = true;
-                }else if(fLocation == 2){
-                    moveRight(26);
-                    robot.driveDir(Direction.FORWARDS, 20);
-                   comp=true;
-
-                }else if(fLocation == 3){
-                    robot.driveDir(Direction.FORWARDS, 20);
-                    // robot.driveDir(Direction.FORWARDS, 15);
-                   comp=true;
-                }
-            }
-            else{
-
-                robot.driveDir(Direction.FORWARDS, 45);
-                // robot.driveDir(Direction.FORWARDS, 15);
-               comp=true;
-            }
-
-
         }
 
+        if(pos==2||pos==3) {
+            robot.driveDir(Direction.FORWARDS, 25);
 
-        robot.driveDir(Direction.FORWARDS, 20);
-
+        }
+        else {
+            robot.driveDir(Direction.FORWARDS, 20);
+        }
         //Sets down vacuumMotor to get above crater
         lower(0.9,0.3);
         robot.chainMotor.setPower(0.8);
         sleep(200);
         robot.chainMotor.setPower(0);
-        robot.driveDir(Direction.BACKWARDS, 45);
+        if(pos==2||pos==3) {
+            robot.driveDir(Direction.BACKWARDS, 45);
+
+        }
+        else {
+            robot.driveDir(Direction.BACKWARDS, 35);
+        }
+       // robot.driveDir(Direction.BACKWARDS, 35);
         raise(0.9, 0.3);
-        robot.turn(Direction.LEFT, 180);
+        robot.turn(Direction.LEFT, 170);
         robot.driveDir(Direction.FORWARDS, 10);
         lower(0.7, 0.5);
+
         robot.liftMotor.setPower(-0.9);
         sleep(1500);
         robot.liftMotor.setPower(0);
-//        sleep(50);
+       sleep(50);
 
     }
 
@@ -396,7 +430,7 @@ public class CraterExperimental extends LinearOpMode {
                 telemetry.update();
                 //uncomment these when you want the gold detection to work, delete the moveStraight
                 runUntilCenter((int)rec.getTop());
-                robot.driveDir(Direction.FORWARDS, 20);
+                robot.driveDir(Direction.FORWARDS, 15);
 
             }else{
                 sPos[cPos-1] = true;
@@ -419,7 +453,7 @@ public class CraterExperimental extends LinearOpMode {
                 }
             }
             if(goldF) {
-                robot.driveDir(Direction.FORWARDS, 20);
+                robot.driveDir(Direction.FORWARDS, 15);
             }else {
                 telemetry.addData("Size is greater than 1 ",updatedRecognitions.size());
                 telemetry.addData(" gold not found"," assuming is silver");

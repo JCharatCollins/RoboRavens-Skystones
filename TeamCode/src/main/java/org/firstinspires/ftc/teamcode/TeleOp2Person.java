@@ -38,10 +38,10 @@ public class TeleOp2Person extends LinearOpMode {
 
             //Sets the direction of the liftMotor for moving up or down
 
-            if (gamepad1.y) {
-                vDir = 1;
-            } else if (gamepad1.a) {
+            if (gamepad1.a||gamepad2.a) {
                 vDir = 2;
+            } else if (gamepad1.y||gamepad2.y) {
+                vDir = 1;
             } else {
                 vDir = 0;
             }
@@ -49,9 +49,9 @@ public class TeleOp2Person extends LinearOpMode {
             //Sets the direction of the CR servos for moving either in or out
             //Up should be moving out, down should be moving in
 
-            if (gamepad2.dpad_up) {
+            if (gamepad1.dpad_up) {
                 hDir = 1;
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad1.dpad_down) {
                 hDir = 2;
             } else {
                 hDir = 0;
@@ -60,9 +60,9 @@ public class TeleOp2Person extends LinearOpMode {
             //Sets the direction of the chain for moving the cleaners in and out
             //X should be picking up, B should be shooting out
 
-            if (gamepad2.x) {
+            if (gamepad1.x) {
                 cDir = 1;
-            } else if (gamepad2.b) {
+            } else if (gamepad1.b) {
                 cDir = 2;
             } else {
                 cDir = 0;
@@ -97,27 +97,27 @@ public class TeleOp2Person extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper) {
-                robot.liftServo.setPosition(0.8);
+                robot.liftServo.setPosition(0.9);
             }
 
             if (gamepad1.right_trigger > 0.1) {
                 robot.liftServo.setPosition(0.24);
             }
 
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_bumper||gamepad1.left_bumper) {
                 robot.vacuumMotor.setPower(1);
             }
 
-            if (gamepad2.left_trigger > 0.1) {
+            if (gamepad2.left_trigger > 0.1||gamepad1.left_trigger>0.1) {
                 robot.vacuumMotor.setPower(-1);
             }
 
             robot.vacuumMotor.setPower(0);
 
-            double rf = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
-            double rb = -gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
-            double lf = -gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
-            double lb = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+            double rf = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x -gamepad2.left_stick_y - gamepad2.left_stick_x - gamepad2.right_stick_x;
+            double rb = -gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x -gamepad2.left_stick_y - gamepad2.left_stick_x + gamepad2.right_stick_x;
+            double lf = -gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x -gamepad2.left_stick_y + gamepad2.left_stick_x + gamepad2.right_stick_x;
+            double lb = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x -gamepad2.left_stick_y + gamepad2.left_stick_x - gamepad2.right_stick_x;
 
             double maxr = Math.max(Math.abs(rf), Math.abs(rb));
             double maxl = Math.max(Math.abs(lf), Math.abs(lb));
